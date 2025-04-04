@@ -1,0 +1,11 @@
+{
+  "name": "cesizen-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  }
+}
