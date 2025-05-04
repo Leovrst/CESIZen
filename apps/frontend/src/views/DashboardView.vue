@@ -104,11 +104,11 @@
                       {{ u.role === 'admin' ? 'Retirer admin' : 'Rendre admin' }}
                     </button>
                     <button
-                      v-if="u.role === 'user'"
+                      v-if="u.role === 'user' && !u.suspended"
                       @click.stop="toggleSuspension(u)"
                       class="block w-full text-left px-2 py-1 hover:bg-gray-100"
                     >
-                      {{ u.suspended ? 'Réactiver' : 'Suspendre' }}
+                      Suspendre
                     </button>
                     <button
                       v-if="u.role === 'user'"
@@ -302,6 +302,22 @@ watch(activeTab, (tab) => {
   }
   if (tab === 'users') {
     fetchUsers();
+  }
+});
+
+watch(message, (val) => {
+  if (val) {
+    setTimeout(() => {
+      message.value = '';
+    }, 5000);
+  }
+});
+
+watch(error, (val) => {
+  if (val) {
+    setTimeout(() => {
+      error.value = '';
+    }, 5000);
   }
 });
 
