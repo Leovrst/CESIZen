@@ -1,5 +1,5 @@
-// backend/src/user/dto/update-user.dto.ts
-import { IsEmail, IsOptional, IsString, MinLength, IsBoolean } from 'class-validator';
+import { IsEmail, IsOptional, IsString, MinLength, IsBoolean, IsEnum } from 'class-validator';
+import { UserRole } from 'src/entities/user.entity';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -19,6 +19,10 @@ export class UpdateUserDto {
   readonly password?: string;
 
   @IsOptional()
+  @IsEnum(UserRole, { message: "Le rôle doit être l'un des suivants: user, admin, superAdmin" })
+  readonly role?: UserRole;
+
+  @IsOptional()
   @IsBoolean()
-  readonly isAdmin?: boolean;
+  readonly suspended?: boolean;
 }

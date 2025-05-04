@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class UserRepository {
@@ -27,6 +27,9 @@ export class UserRepository {
   }
 
   async updateUser(id: number, updateData: Partial<User>): Promise<User> {
+    if (Object.keys(updateData).length === 0) {
+      throw new Error('Update values are missing.');
+    }
     await this.userRepository.update(id, updateData);
     const user = await this.findById(id);
     if (!user) {

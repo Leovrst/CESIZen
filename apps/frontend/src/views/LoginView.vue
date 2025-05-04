@@ -1,4 +1,3 @@
-<!-- src/views/LoginView.vue -->
 <template>
     <div class="max-w-md mx-auto p-4">
       <h1 class="text-2xl font-bold mb-4">Connexion</h1>
@@ -43,19 +42,20 @@
   const router = useRouter();
   
   async function login() {
-    try {
-      const response = await api.post('/users/login', {
-        email: email.value,
-        password: password.value,
-      });
-      localStorage.setItem('token', response.data.token);
-      if(response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-      router.push('/');
-    } catch (err: any) {
-      console.error(err);
-      error.value = err.response?.data?.message || "Une erreur s'est produite lors de la connexion.";
+  try {
+    const response = await api.post('/users/login', {
+      email: email.value,
+      password: password.value,
+    });
+    localStorage.setItem('token', response.data.token);
+    if(response.data.user) {
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     }
+    await router.push('/');
+    window.location.reload();
+  } catch (err: any) {
+    console.error(err);
+    error.value = err.response?.data?.message || "Une erreur s'est produite lors de la connexion.";
   }
+}
   </script>

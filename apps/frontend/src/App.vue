@@ -1,18 +1,17 @@
-<!-- src/App.vue -->
 <template>
-  <div id="app">
+  <Menu>
     <router-view />
-  </div>
+  </Menu>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Menu from './components/Menu.vue';
 
 export default defineComponent({
   name: 'App',
+  components: {
+    Menu,
+  },
 });
 </script>
-
-<style>
-/* Vos styles ici */
-</style>

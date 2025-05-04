@@ -1,8 +1,8 @@
-// backend/src/user/user.service.ts
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from '../entities/user.entity';
-import { UserRepository } from '../repositories/user.repository';
+import { User, UserRole } from '../entities/user.entity';
+import { UserRepository } from './dto/user.repository';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -13,22 +13,22 @@ export class UserService {
     lastName: string,
     email: string,
     password: string,
+    role?: UserRole,
   ): Promise<User> {
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
       throw new ConflictException('Un utilisateur avec cet email existe déjà.');
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const registeredAt = new Date();
-
     const userData: Partial<User> = {
       firstName,
       lastName,
       email,
       password: hashedPassword,
       registeredAt,
-      isAdmin: false,
+      suspended: false,
+      role: role ? role : UserRole.USER,
     };
 
     return this.userRepository.createAndSave(userData);
@@ -50,19 +50,28 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: number, updateData: Partial<User>): Promise<User> {
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
+  async updateUser(id: number, updateData: Partial<UpdateUserDto>): Promise<User> {
+    const dataToUpdate: Partial<User> = { ...updateData };
+
+    if (dataToUpdate.password) {
+      dataToUpdate.password = await bcrypt.hash(dataToUpdate.password, 10);
     }
-    return this.userRepository.updateUser(id, updateData);
+
+    return this.userRepository.updateUser(id, dataToUpdate);
   }
 
   async deleteUser(id: number): Promise<void> {
-    await this.findUserById(id); // Pour vérifier l'existence
+    await this.findUserById(id);
     await this.userRepository.deleteUser(id);
   }
 
   async getAllUsers(): Promise<User[]> {
     return this.userRepository.findAll();
   }
+
+  async resetPassword(id: number, newPassword: string): Promise<void> {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.updateUser(id, { password: hashedPassword });
+  }
+
 }

@@ -28,7 +28,7 @@ export class AuthenticationService {
       throw new UnauthorizedException('Identifiants incorrects');
     }
     // Définir le payload à partir de l'utilisateur
-    const payload = { sub: user.id, email: user.email, isAdmin: user.isAdmin };
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       token: this.jwtService.sign(payload),
       user,
