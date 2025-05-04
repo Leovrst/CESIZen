@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +10,6 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
   ) {}
 
-  // Méthode pour valider l'utilisateur en comparant le mot de passe
   async validateUser(email: string, password: string) {
     const user = await this.userService.findUserByEmail(email);
     if (user && await bcrypt.compare(password, user.password)) {
@@ -21,17 +19,13 @@ export class AuthenticationService {
     return null;
   }
 
-  // Méthode de login qui renvoie un token JWT et l'objet utilisateur (sans mot de passe)
   async login(email: string, password: string) {
     const user = await this.validateUser(email, password);
-    if (!user) {
-      throw new UnauthorizedException('Identifiants incorrects');
-    }
-    // Définir le payload à partir de l'utilisateur
-    const payload = { sub: user.id, email: user.email, isAdmin: user.isAdmin };
-    return {
-      token: this.jwtService.sign(payload),
-      user,
-    };
+    if (!user) throw new UnauthorizedException('Identifiants incorrects');
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+
+    return { accessToken, user };
   }
 }

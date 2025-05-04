@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import DashboardView from '../views/DashboardView.vue';
+import ProfileView from '../views/ProfileView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,15 +23,31 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterView,
   },
   {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView,
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardView,
+    meta: { requiresAdmin: true },
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const token = localStorage.getItem('token');
+  if (authRequired && !token) {
+    return next('/login');
+  }
+  next();
 });
 
 export default router;

@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { ReactivationRequestModule } from './reactivation-request/reactivationRequest.module';
 
 @Module({
   imports: [
@@ -28,6 +28,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
     }),
     UserModule,
     AuthenticationModule,
+    ReactivationRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

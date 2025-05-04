@@ -1,8 +1,7 @@
-// backend/src/user/user.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { UserRepository } from '../repositories/user.repository';
+import { UserRepository } from './dto/user.repository';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 

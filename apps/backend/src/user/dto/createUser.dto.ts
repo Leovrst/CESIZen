@@ -1,5 +1,5 @@
-// backend/src/user/dto/create-user.dto.ts
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { UserRole } from 'src/entities/user.entity';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'Le prénom est requis.' })
@@ -17,4 +17,12 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Le mot de passe est requis.' })
   @MinLength(6, { message: 'Le mot de passe doit contenir au moins 6 caractères.' })
   readonly password: string;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly suspended?: boolean;
+
+  @IsOptional()
+  @IsEnum(UserRole, { message: 'Le rôle doit être l\'un des suivants: user, admin, superAdmin' })
+  readonly role?: UserRole;
 }

@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User } from '../../entities/user.entity';
 
 @Injectable()
 export class UserRepository {
@@ -16,7 +16,7 @@ export class UserRepository {
     return user ?? undefined;
   }
 
-  async findById(id: number): Promise<User | undefined> {
+  async findById(id: string): Promise<User | undefined> {
     const user = await this.userRepository.findOne({ where: { id } });
     return user ?? undefined;
   }
@@ -26,7 +26,10 @@ export class UserRepository {
     return this.userRepository.save(user);
   }
 
-  async updateUser(id: number, updateData: Partial<User>): Promise<User> {
+  async updateUser(id: string, updateData: Partial<User>): Promise<User> {
+    if (Object.keys(updateData).length === 0) {
+      throw new Error('Update values are missing.');
+    }
     await this.userRepository.update(id, updateData);
     const user = await this.findById(id);
     if (!user) {
@@ -35,7 +38,7 @@ export class UserRepository {
     return user;
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     await this.userRepository.delete(id);
   }
 
