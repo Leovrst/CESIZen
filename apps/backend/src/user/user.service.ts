@@ -42,7 +42,7 @@ export class UserService {
     return user;
   }
 
-  async findUserById(id: number): Promise<User> {
+  async findUserById(id: string): Promise<User> {
     const user = await this.userRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`Aucun utilisateur trouvé avec l'ID ${id}`);
@@ -50,7 +50,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: number, updateData: Partial<UpdateUserDto>): Promise<User> {
+  async updateUser(id: string, updateData: Partial<UpdateUserDto>): Promise<User> {
     const dataToUpdate: Partial<User> = { ...updateData };
 
     if (dataToUpdate.password) {
@@ -60,7 +60,7 @@ export class UserService {
     return this.userRepository.updateUser(id, dataToUpdate);
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     await this.findUserById(id);
     await this.userRepository.deleteUser(id);
   }
@@ -69,7 +69,7 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  async resetPassword(id: number, newPassword: string): Promise<void> {
+  async resetPassword(id: string, newPassword: string): Promise<void> {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.userRepository.updateUser(id, { password: hashedPassword });
   }

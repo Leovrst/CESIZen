@@ -1,5 +1,5 @@
-// src/auth/auth.controller.ts
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Res } from '@nestjs/common';
+import { LoginDto } from './dto/login.dto';
 import { AuthenticationService } from '../authentication/authentication.service';
 
 @Controller('users')
@@ -7,7 +7,9 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
-    return this.authenticationService.login(body.email, body.password);
+  async login(@Body() loginDto: LoginDto) {
+    // on déstructure simplement email et password
+    const { email, password } = loginDto;
+    return this.authenticationService.login(email, password);
   }
 }

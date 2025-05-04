@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, ParseIntPipe, Put, ParseUUIDPipe } from '@nestjs/common';
 import { ReactivationRequestService } from './reactivationRequest.service';
 import { CreateReactivationRequestDto } from './dto/createReactivationRequest.dto';
 import { ReactivationRequest } from '../entities/reactivationRequest.entity';
@@ -23,14 +23,14 @@ export class ReactivationRequestController {
 
   @Put(':id/approve')
   async approveRequest(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseUUIDPipe) id: string
   ): Promise<ReactivationRequest> {
     return this.requestService.approveRequest(id);
   }
 
   @Put(':id/reject')
   async rejectRequest(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('rejectionComment') rejectionComment: string
   ): Promise<ReactivationRequest> {
     return this.requestService.rejectRequest(id, rejectionComment);

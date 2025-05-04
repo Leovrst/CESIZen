@@ -19,7 +19,7 @@ export class ReactivationRequestRepository {
     return this.repo.find();
   }
 
-  async findPendingByUserId(userId: number): Promise<ReactivationRequest | null> {
+  async findPendingByUserId(userId: string): Promise<ReactivationRequest | null> {
     return this.repo.findOne({
       where: {
         user: { id: userId },
@@ -28,7 +28,7 @@ export class ReactivationRequestRepository {
     });
   }
 
-  async updateRequest(id: number, updateData: Partial<ReactivationRequest>): Promise<ReactivationRequest> {
+  async updateRequest(id: string, updateData: Partial<ReactivationRequest>): Promise<ReactivationRequest> {
     await this.repo.update(id, updateData);
     const request = await this.repo.findOne({ where: { id } });
     if (!request) {
@@ -37,7 +37,7 @@ export class ReactivationRequestRepository {
     return request;
   }
 
-  async hasRecentRejected(userId: number, since: Date): Promise<boolean> {
+  async hasRecentRejected(userId: string, since: Date): Promise<boolean> {
     const count = await this.repo.count({
       where: {
         user: { id: userId },

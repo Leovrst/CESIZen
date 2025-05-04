@@ -10,7 +10,7 @@ export class ReactivationRequestService {
     private readonly userService: UserService,
   ) {}
 
-  async createRequest(userId: number, comment: string): Promise<ReactivationRequest> {
+  async createRequest(userId: string, comment: string): Promise<ReactivationRequest> {
     const user = await this.userService.findUserById(userId);
     if (!user) throw new NotFoundException("Utilisateur non trouvé.");
   
@@ -41,18 +41,16 @@ export class ReactivationRequestService {
     return this.requestRepository.findAll();
   }
 
-  async approveRequest(requestId: number): Promise<ReactivationRequest> {
+  async approveRequest(requestId: string): Promise<ReactivationRequest> {
     const request = await this.requestRepository.updateRequest(requestId, { status: RequestStatus.APPROVED });
     if (!request) throw new NotFoundException("Demande non trouvée.");
     await this.userService.updateUser(request.user.id, { suspended: false });
     return request;
   }
 
-  async rejectRequest(requestId: number, rejectionComment: string): Promise<ReactivationRequest> {
+  async rejectRequest(requestId: string, rejectionComment: string): Promise<ReactivationRequest> {
     const request = await this.requestRepository.updateRequest(requestId, { status: RequestStatus.REJECTED });
     if (!request) throw new NotFoundException("Demande non trouvée.");
-    // Ici, vous pouvez enregistrer la date du rejet ou imposer une interdiction de soumettre une nouvelle demande pendant 1 mois.
-    // Cette logique dépend de votre implémentation.
     return request;
   }
 }

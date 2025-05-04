@@ -41,11 +41,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAdmin) {
-    const userJson = localStorage.getItem('user');
-    if (!userJson) {
-      return next({ name: 'login' });
-    }
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const token = localStorage.getItem('token');
+  if (authRequired && !token) {
+    return next('/login');
   }
   next();
 });

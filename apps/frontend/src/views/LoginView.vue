@@ -43,14 +43,12 @@
   
   async function login() {
   try {
-    const response = await api.post('/users/login', {
+    const { data } = await api.post('/users/login', {
       email: email.value,
       password: password.value,
     });
-    localStorage.setItem('token', response.data.token);
-    if(response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
+    localStorage.setItem('token', data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.user));
     await router.push('/');
     window.location.reload();
   } catch (err: any) {

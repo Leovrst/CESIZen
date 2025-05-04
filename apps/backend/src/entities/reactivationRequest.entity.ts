@@ -9,8 +9,8 @@ export enum RequestStatus {
 
 @Entity('reactivation_requests')
 export class ReactivationRequest {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => User, { eager: true })
   user: User;

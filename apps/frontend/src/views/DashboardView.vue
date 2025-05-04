@@ -214,7 +214,7 @@ import api from '@/services/api';
 
 
 interface User {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -232,7 +232,7 @@ interface DeletionRequest {
 }
 
 interface ReactivationRequest {
-  id: number;
+  id: string;
   user: User;
   comment: string;
   createdAt: string;
@@ -269,13 +269,13 @@ const newAccount = reactive({
   password: '',
 });
 
-const actionMenuOpen = ref<number | null>(null);
+const actionMenuOpen = ref<string | null>(null);
 
 const hasAccess = computed(() => {
   return currentUser.value && (currentUser.value.role === 'admin' || currentUser.value.role === 'superAdmin');
 });
 
-function toggleActionMenu(userId: number) {
+function toggleActionMenu(userId: string) {
   actionMenuOpen.value = actionMenuOpen.value === userId ? null : userId;
 }
 
@@ -462,7 +462,7 @@ async function fetchReactivationRequests() {
   }
 }
 
-function toggleRequestMenu(requestId: number) {
+function toggleRequestMenu(requestId: string) {
   actionMenuOpen.value = actionMenuOpen.value === requestId ? null : requestId;
 }
 
