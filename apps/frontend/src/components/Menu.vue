@@ -12,11 +12,11 @@
 
         <template v-if="loggedIn">
           <RouterLink
-            v-if="currentRouteName !== 'auto-diagnostic'"
-            to="/auto-diagnostic"
+            v-if="currentRouteName !== 'diagnostic'"
+            to="/diagnostic"
             class="hover:underline"
           >
-            Auto Diagnostic
+            Diagnostic
           </RouterLink>
           <RouterLink
             v-if="currentRouteName !== 'profile'"
