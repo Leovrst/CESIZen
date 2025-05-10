@@ -1,19 +1,14 @@
 <template>
   <div class="max-w-3xl mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">{{ info?.title }}</h1>
-
-    <!-- Image en tête -->
     <img
         v-if="info?.imageUrl"
         :src="fullImageUrl"
         alt="Illustration"
         class="mb-6 w-full rounded shadow"
     />
-
-    <!-- Contenu riche -->
     <div class="prose mb-6" v-html="info?.content"></div>
 
-    <!-- Vidéo en pied -->
     <div v-if="info?.videoUrl" class="mt-6">
       <iframe
         :src="embedUrl"
@@ -24,7 +19,6 @@
       ></iframe>
     </div>
 
-    <!-- Bouton Éditer pour admin -->
     <button
       v-if="hasAccess"
       @click="startEdit()"
@@ -33,7 +27,6 @@
       ✏️ Éditer
     </button>
 
-    <!-- Formulaire d'édition -->
     <div v-if="editing" class="mt-4 border p-4 rounded bg-white shadow">
       <h2 class="font-semibold mb-4">Modifier la page</h2>
 
@@ -105,11 +98,9 @@ const hasAccess = ref(false)
 
 const fullImageUrl = computed(() => {
   if (!info.value?.imageUrl) return '';
-  // api.defaults.baseURL vaut 'http://localhost:3000'
   return `${api.defaults.baseURL}${info.value.imageUrl}`;
 });
 
-// Générer l'URL embarquée YouTube
 const embedUrl = computed(() => {
   if (!info.value?.videoUrl) return ''
   const url = info.value.videoUrl

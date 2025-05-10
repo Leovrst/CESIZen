@@ -30,7 +30,6 @@ const storage = diskStorage({
 export class InformationPageController {
     constructor(private svc: InformationPageService) {}
 
-    // consultation publique ou connectée
     @Get()
     getAll(
       @Query('page', ParseIntPipe) page = 1,
@@ -51,12 +50,10 @@ export class InformationPageController {
       @UploadedFile() file: Express.Multer.File,
       @Body() dto: CreateInformationPageDto,
     ) {
-      // si Multer a reçu un fichier, stocke file.path
       const imageUrl = file ? `/uploads/${file.filename}` : undefined;
       return this.svc.create({ ...dto, imageUrl });
     }
-  
-    // CRUD admin (role admin requis)
+
     @UseGuards(AuthGuard('jwt'))
     @UseInterceptors(FileInterceptor('image', { storage }))
     @Put('admin/:id')
