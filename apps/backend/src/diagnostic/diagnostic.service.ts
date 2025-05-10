@@ -5,7 +5,7 @@ import { DiagnosticQuestion } from '../entities/diagnostic-question.entity';
 import { DiagnosticResult } from '../entities/diagnostic-result.entity';
 import { UpdateQuestionsDto } from './dto/update-questions.dto';
 import { UpdateResultsDto } from './dto/update-results.dto';
-import { UserDiagnosticResult } from 'src/entities/user-diagnostic-result';
+import { UserDiagnosticResult } from '../entities/user-diagnostic-result';
 
 @Injectable()
 export class DiagnosticService {
