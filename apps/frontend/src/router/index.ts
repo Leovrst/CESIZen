@@ -5,6 +5,7 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import ProfileView from '../views/ProfileView.vue';
+import DiagnosticView from '@/views/DiagnosticView.vue';
 import InformationListView from '../views/InformationListView.vue';
 import InformationDetailView from '../views/InformationDetailView.vue';
 
@@ -23,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/register',
     name: 'register',
     component: RegisterView,
+  },
+  {
+    path: '/diagnostic',
+    name: 'diagnostic',
+    component: DiagnosticView,
   },
   {
     path: '/profile',
