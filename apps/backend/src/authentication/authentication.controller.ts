@@ -8,7 +8,6 @@ export class AuthenticationController {
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    // on déstructure simplement email et password
     const { email, password } = loginDto;
     return this.authenticationService.login(email, password);
   }
