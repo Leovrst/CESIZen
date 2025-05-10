@@ -12,9 +12,17 @@ import { DiagnosticQuestion } from './entities/diagnostic-question.entity';
 import { DiagnosticResult } from './entities/diagnostic-result.entity';
 import { UserDiagnosticResult } from './entities/user-diagnostic-result';
 import { ReactivationRequest } from './entities/reactivationRequest.entity';
+import { InformationPageModule } from './information/information.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      serveRoot: '/uploads',
+      // on pointe vers le dossier 'uploads' à la racine du projet
+      rootPath: join(process.cwd(), 'uploads'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -42,6 +50,7 @@ import { ReactivationRequest } from './entities/reactivationRequest.entity';
     AuthenticationModule,
     ReactivationRequestModule,
     DiagnosticModule,
+    InformationPageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

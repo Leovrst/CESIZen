@@ -6,6 +6,8 @@ import RegisterView from '../views/RegisterView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import ProfileView from '../views/ProfileView.vue';
 import DiagnosticView from '@/views/DiagnosticView.vue';
+import InformationListView from '../views/InformationListView.vue';
+import InformationDetailView from '../views/InformationDetailView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,6 +40,18 @@ const routes: Array<RouteRecordRaw> = [
     name: 'dashboard',
     component: DashboardView,
     meta: { requiresAdmin: true },
+  },
+  {
+    path: '/informations',
+    name: 'info-list',
+    component: InformationListView,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/info/:slug',
+    name: 'info-detail',
+    component: InformationDetailView,
+    meta: { requiresAuth: false }
   },
 ];
 
