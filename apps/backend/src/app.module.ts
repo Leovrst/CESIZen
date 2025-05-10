@@ -6,9 +6,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ReactivationRequestModule } from './reactivation-request/reactivationRequest.module';
+import { InformationPageModule } from './information/information.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      serveRoot: '/uploads',
+      // on pointe vers le dossier 'uploads' à la racine du projet
+      rootPath: join(process.cwd(), 'uploads'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -29,6 +37,7 @@ import { ReactivationRequestModule } from './reactivation-request/reactivationRe
     UserModule,
     AuthenticationModule,
     ReactivationRequestModule,
+    InformationPageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

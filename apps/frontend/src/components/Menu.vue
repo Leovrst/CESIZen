@@ -26,8 +26,8 @@
             Profil
           </RouterLink>
           <RouterLink
-            v-if="currentRouteName !== 'infos'"
-            to="/infos"
+            v-if="currentRouteName !== 'informations'"
+            to="/informations"
             class="hover:underline"
           >
             Informations
