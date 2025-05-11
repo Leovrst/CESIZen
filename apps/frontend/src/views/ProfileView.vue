@@ -61,7 +61,7 @@
 
       <div class="mb-6">
         <button @click="requestDataAccess" class="bg-green-500 text-white px-4 py-2 rounded">
-          Demander l'accès à mes données personnelles
+          Voir mes données personnelles
         </button>
       </div>
 
