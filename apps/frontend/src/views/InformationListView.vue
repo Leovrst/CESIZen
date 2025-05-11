@@ -13,7 +13,6 @@
     <div v-if="showCreate" class="mb-4 border p-4 rounded bg-white shadow">
       <h2 class="font-semibold mb-4">Nouvelle page</h2>
 
-      <!-- Titre -->
       <div class="mb-2">
         <label class="block text-gray-700">Titre</label>
         <input
@@ -23,13 +22,11 @@
         />
       </div>
 
-      <!-- Upload image -->
       <div class="mb-2">
         <label class="block text-gray-700">Image</label>
         <input type="file" @change="onFileChange" accept="image/*" />
       </div>
 
-      <!-- Lien vidéo YouTube -->
       <div class="mb-4">
         <label class="block text-gray-700">Vidéo (URL YouTube)</label>
         <input
@@ -39,7 +36,6 @@
         />
       </div>
 
-      <!-- Contenu -->
       <div class="mb-4">
         <label class="block text-gray-700">Contenu</label>
         <textarea
@@ -65,7 +61,6 @@
       </button>
     </div>
 
-    <!-- Liste paginée -->
     <ul>
       <li
         v-for="page in pages"
@@ -78,7 +73,6 @@
       </li>
     </ul>
 
-    <!-- Pagination -->
     <div class="mt-4 flex justify-between">
       <button @click="prevPage" :disabled="page === 1">Précédent</button>
       <span>Page {{ page }} / {{ totalPages }}</span>
@@ -112,7 +106,6 @@ const newPage = ref({ title: '', content: '' })
 const videoUrlInput = ref('')
 const selectedFile = ref<File | null>(null)
 
-// slug automatique
 const slug = computed(() =>
   newPage.value.title
     .trim()
