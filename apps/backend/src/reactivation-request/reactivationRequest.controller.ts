@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, ParseIntPipe, Put, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, ParseIntPipe, Put, ParseUUIDPipe, BadRequestException } from '@nestjs/common';
 import { ReactivationRequestService } from './reactivationRequest.service';
 import { CreateReactivationRequestDto } from './dto/createReactivationRequest.dto';
 import { ReactivationRequest } from '../entities/reactivationRequest.entity';
@@ -8,12 +8,14 @@ export class ReactivationRequestController {
   constructor(private readonly requestService: ReactivationRequestService) {}
 
   @Post()
-  async createRequest(@Body() dto: CreateReactivationRequestDto): Promise<ReactivationRequest> {
-    const userId = dto['userId'];
+  async createRequest(
+    @Body() dto: CreateReactivationRequestDto
+  ): Promise<ReactivationRequest> {
+    const { userId, comment } = dto;
     if (!userId) {
-      throw new Error("L'ID de l'utilisateur est requis");
+      throw new BadRequestException("L'ID de l'utilisateur est requis");
     }
-    return this.requestService.createRequest(userId, dto.comment);
+    return this.requestService.createRequest(userId, comment);
   }
 
   @Get()
