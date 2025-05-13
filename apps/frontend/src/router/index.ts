@@ -48,7 +48,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: false }
   },
   {
-    path: '/info/:slug',
+    path: '/informations/:slug',
     name: 'info-detail',
     component: InformationDetailView,
     meta: { requiresAuth: false }
