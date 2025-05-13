@@ -189,12 +189,10 @@ async function fetchData() {
     scoreFromServer.value = 0;
 
     if (currentUser) {
-      try {
         const resp = await api.get('/diagnostic/user-result');
         scoreFromServer.value = resp.data.score;
         evaluation.value      = resp.data.result;
         currentIndex.value    = sortedQuestions.value.length;
-      } catch {/* 404 ok */}
     }
   } catch (e: any) {
     error.value = e.response?.data?.message || 'Erreur de chargement.';
