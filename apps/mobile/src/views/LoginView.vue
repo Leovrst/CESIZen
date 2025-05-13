@@ -2,30 +2,12 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Inscription</ion-title>
+        <ion-title>Connexion</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="ion-padding">
-      <form @submit.prevent="register">
-        <ion-item>
-          <ion-label position="stacked">Prénom</ion-label>
-          <ion-input
-            type="text"
-            v-model="firstName"
-            required
-          ></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label position="stacked">Nom</ion-label>
-          <ion-input
-            type="text"
-            v-model="lastName"
-            required
-          ></ion-input>
-        </ion-item>
-
+      <form @submit.prevent="login">
         <ion-item>
           <ion-label position="stacked">Email</ion-label>
           <ion-input
@@ -49,7 +31,7 @@
           type="submit"
           class="ion-margin-top"
         >
-          S'inscrire
+          Se connecter
         </ion-button>
       </form>
 
@@ -77,27 +59,26 @@ import {
   IonText,
 } from '@ionic/vue';
 
-const firstName = ref<string>('');
-const lastName  = ref<string>('');
-const email     = ref<string>('');
-const password  = ref<string>('');
-const error     = ref<string>('');
+const email    = ref<string>('');
+const password = ref<string>('');
+const error    = ref<string>('');
 
 const router = useRouter();
 
-async function register() {
+async function login() {
   try {
-    const response = await api.post('/users/register', {
-      firstName: firstName.value,
-      lastName:  lastName.value,
-      email:     email.value,
-      password:  password.value,
+    const { data } = await api.post('/users/login', {
+      email:    email.value,
+      password: password.value,
     });
-    console.log('Inscription réussie :', response.data);
-    router.push('/login');
+    localStorage.setItem('token',     data.accessToken);
+    localStorage.setItem('user',      JSON.stringify(data.user));
+    await router.push('/');
+    window.location.reload();
   } catch (err: any) {
-    console.error('Erreur API register :', err);
-    error.value = err.response?.data?.message;
+    console.error('Erreur API login :', err);
+    error.value = err.response?.data?.message
+      || "Une erreur s'est produite lors de la connexion.";
   }
 }
 </script>
