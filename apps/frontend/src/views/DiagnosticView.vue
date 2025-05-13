@@ -2,12 +2,10 @@
   <div class="max-w-3xl mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Auto-diagnostic de stress (Holmes & Rahe)</h1>
 
-    <!-- Section de configuration pour les administrateurs -->
     <div v-if="showConfigSection" class="mb-6 p-4 border rounded bg-gray-50">
       <button @click="showConfigSection = false" class="mb-4 px-4 py-2 bg-gray-200 rounded">
         Masquer la configuration
       </button>
-      <!-- Configuration des questions -->
       <div class="mb-6">
         <h2 class="text-xl font-semibold mb-2">Questions</h2>
         <div v-for="(q, index) in questions" :key="q.id || index" class="flex items-center mb-2">
@@ -19,7 +17,6 @@
         <button @click="saveQuestions" class="mt-2 ml-2 px-3 py-1 bg-blue-500 text-white rounded">Enregistrer questions</button>
       </div>
 
-      <!-- Configuration des résultats -->
       <div>
         <h2 class="text-xl font-semibold mb-2">Résultats</h2>
         <div v-for="(r, index) in results" :key="r.id || index" class="mb-4 border p-2 rounded">
@@ -41,16 +38,13 @@
       </div>
     </div>
 
-    <!-- Bouton pour ouvrir la configuration (admins) -->
     <div class="mb-4" v-if="isAdmin && !showConfigSection">
       <button @click="showConfigSection = true" class="px-4 py-2 bg-blue-500 text-white rounded">Configurer le diagnostic</button>
     </div>
 
-    <!-- Formulaire / Résultat -->
     <div>
       <h2 class="text-xl font-semibold mb-2">Questionnaire</h2>
 
-      <!-- Affichage du résultat si existant -->
       <div v-if="evaluation">
         <div class="mt-6 p-4 border rounded bg-gray-100">
           <h3 class="text-lg font-semibold mb-1">{{ evaluation.title }}</h3>
@@ -62,9 +56,7 @@
         </button>
       </div>
 
-      <!-- Questionnaire si pas de résultat en mémoire -->
       <div v-else>
-        <!-- Phase de questions individuelles -->
         <div v-if="!isComplete">
           <p class="mb-4">Ne tenez compte que des événements qui se sont produits au cours des 24 derniers mois.</p>
           <p class="mb-4">Question {{ currentIndex + 1 }} sur {{ sortedQuestions.length }} :</p>
@@ -74,7 +66,6 @@
             <button @click="answer(false)" class="px-4 py-2 bg-red-500 text-white rounded">Non</button>
           </div>
         </div>
-        <!-- Phase finale, bouton pour afficher résultats -->
         <div v-else class="mt-4">
           <p class="mb-4">Vous avez répondu à toutes les questions !</p>
           <button @click="evaluate" class="px-4 py-2 bg-blue-500 text-white rounded">Afficher le résultat</button>
@@ -91,7 +82,6 @@ import api from '@/services/api'
 interface DiagnosticQuestion { id: string; label: string; points: number }
 interface DiagnosticResult   { id: string; title: string; minScore: number; maxScore: number; message: string }
 
-// Données et state
 const questions       = ref<DiagnosticQuestion[]>([])
 const results         = ref<DiagnosticResult[]>([])
 const selected        = reactive<Record<string, boolean>>({})
@@ -101,17 +91,14 @@ const scoreFromServer = ref(0)
 const showConfigSection = ref(false)
 const error             = ref<string>('')
 
-// Utilisateur
 const userJson    = localStorage.getItem('user')
 const currentUser = userJson ? JSON.parse(userJson) : null
 const isAdmin     = computed(() => currentUser?.role === 'admin' || currentUser?.role === 'superAdmin')
 
-// Computed
 const sortedQuestions = computed(() => [...questions.value].sort((a, b) => a.points - b.points))
 const currentQuestion = computed(() => sortedQuestions.value[currentIndex.value])
 const isComplete      = computed(() => currentIndex.value >= sortedQuestions.value.length)
 
-// Initialisation : charge config et résultat en mémoire (localStorage ou base)
 async function fetchData() {
   try {
     const [qRes, rRes] = await Promise.all([
@@ -121,13 +108,11 @@ async function fetchData() {
     questions.value = qRes.data
     results.value   = rRes.data
 
-    // reset local state
     sortedQuestions.value.forEach(q => (selected[q.id] = false))
     currentIndex.value = 0
     evaluation.value   = null
     scoreFromServer.value = 0
 
-    // 1) si connecté, tenter de charger depuis backend
     if (currentUser) {
       try {
         const resp = await api.get('/diagnostic/user-result')
@@ -140,7 +125,6 @@ async function fetchData() {
       }
     }
 
-    // 2) sinon, tenter de charger le résultat anonyme en localStorage
     const anon = localStorage.getItem('diagnosticAnon')
     if (anon) {
       try {
@@ -157,13 +141,11 @@ async function fetchData() {
   }
 }
 
-// Répondre à une question
 function answer(value: boolean) {
   selected[currentQuestion.value.id] = value
   currentIndex.value++
 }
 
-// Évaluation (avec ou sans persistance selon auth)
 async function evaluate() {
   try {
     const s = sortedQuestions.value.reduce((sum, q) => sum + (selected[q.id] ? q.points : 0), 0)
@@ -171,7 +153,6 @@ async function evaluate() {
     scoreFromServer.value = resp.data.score
     evaluation.value      = resp.data.result
 
-    // stocker localement pour utilisateur anonyme
     if (!currentUser) {
       localStorage.setItem('diagnosticAnon', JSON.stringify({ score: scoreFromServer.value, result: evaluation.value }))
     }
@@ -180,16 +161,13 @@ async function evaluate() {
   }
 }
 
-// Réinitialiser pour repasser le test (backend et local)
 async function resetTest() {
   try {
     if (currentUser) {
       await api.delete('/diagnostic/user-result')
     }
-    // toujours supprimer le cache anonyme
     localStorage.removeItem('diagnosticAnon')
 
-    // reset UI
     sortedQuestions.value.forEach(q => (selected[q.id] = false))
     currentIndex.value = 0
     evaluation.value   = null
@@ -199,7 +177,6 @@ async function resetTest() {
   }
 }
 
-// Fonctions d'administration
 function addQuestion() { questions.value.push({ id: '', label: '', points: 0 }) }
 function removeQuestion(i: number) { questions.value.splice(i, 1) }
 async function saveQuestions() {
