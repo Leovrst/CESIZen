@@ -7,7 +7,6 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <!-- Section de configuration (Admin) -->
       <ion-card v-if="showConfigSection">
         <ion-card-header>
           <ion-card-title>Configuration du diagnostic</ion-card-title>
@@ -16,7 +15,6 @@
           </ion-button>
         </ion-card-header>
         <ion-card-content>
-          <!-- Questions -->
           <ion-list>
             <ion-list-header>Questions</ion-list-header>
             <ion-item v-for="(q, index) in questions" :key="q.id || index">
@@ -43,7 +41,6 @@
             </ion-button>
           </ion-list>
 
-          <!-- Résultats -->
           <ion-list>
             <ion-list-header>Résultats</ion-list-header>
             <ion-item v-for="(r, index) in results" :key="r.id || index">
@@ -96,7 +93,6 @@
         </ion-card-content>
       </ion-card>
 
-      <!-- Bouton Afficher / Cacher configuration -->
       <ion-button
         expand="block"
         color="primary"
@@ -107,13 +103,11 @@
         Configurer le diagnostic
       </ion-button>
 
-      <!-- Section de questionnaire -->
       <ion-card>
         <ion-card-header>
           <ion-card-title>Questionnaire</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <!-- Résultat deja évalué -->
           <div v-if="evaluation">
             <ion-card>
               <ion-card-header>
@@ -129,7 +123,6 @@
             </ion-button>
           </div>
 
-          <!-- Questions en cours -->
           <div v-else>
             <div v-if="!isComplete">
               <p>Question {{ currentIndex + 1 }} / {{ sortedQuestions.length }}</p>
