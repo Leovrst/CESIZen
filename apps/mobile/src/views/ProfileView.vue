@@ -101,6 +101,10 @@
           </ion-card-content>
         </ion-card>
 
+        <ion-button expand="block" color="danger" @click="logout">
+          Déconnexion
+        </ion-button>
+        
         <ion-button expand="block" color="danger" @click="deleteAccount">
           Supprimer mon compte
         </ion-button>
@@ -301,5 +305,13 @@ async function submitReactivationRequest() {
   } finally {
     submitting.value = false;
   }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  router.push('/login').then(() => {
+    window.location.reload();
+  });
 }
 </script>

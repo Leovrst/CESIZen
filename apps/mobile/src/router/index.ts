@@ -7,6 +7,7 @@ import ProfileView from '@/views/ProfileView.vue';
 import DiagnosticView from '@/views/DiagnosticView.vue';
 import InformationListView from '@/views/InformationListView.vue';
 import InformationDetailView from '@/views/InformationDetailView.vue';
+import DashboardView from '@/views/DashboardView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -48,6 +49,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Informations-detail',
     component: InformationDetailView,
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: DashboardView,
+    meta: { requiresAdmin: true },
   }
 ]
 
