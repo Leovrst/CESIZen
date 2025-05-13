@@ -24,15 +24,15 @@
             <div v-else>
               <ion-item>
                 <ion-label position="stacked">Prénom</ion-label>
-                <ion-input v-model:value="profile.firstName" />
+                <ion-input v-model="profile.firstName" />
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">Nom</ion-label>
-                <ion-input v-model:value="profile.lastName" />
+                <ion-input v-model="profile.lastName" />
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">Email</ion-label>
-                <ion-input type="email" v-model:value="profile.email" />
+                <ion-input type="email" v-model="profile.email" />
               </ion-item>
               <ion-button color="success" @click="confirmProfileUpdate" class="ion-margin-top">
                 Confirmer
@@ -61,7 +61,7 @@
               </ion-item>
               <ion-item>
                 <ion-label position="stacked">Confirmer le mot de passe</ion-label>
-                <ion-input type="password" v-model:value="confirmPassword" />
+                <ion-input type="password" v-model="confirmPassword" />
               </ion-item>
               <ion-button color="tertiary" @click="confirmPasswordReset" class="ion-margin-top">
                 Confirmer
@@ -89,7 +89,7 @@
             <div v-else>
               <ion-item>
                 <ion-label position="stacked">Raison</ion-label>
-                <ion-textarea rows="3" v-model:value="deletionReason" />
+                <ion-textarea :rows="3" v-model="deletionReason" />
               </ion-item>
               <ion-button color="warning" @click="confirmDataDeletionRequest" class="ion-margin-top">
                 Envoyer la demande
@@ -132,7 +132,7 @@
               <form @submit.prevent="submitReactivationRequest">
                 <ion-item>
                   <ion-label position="stacked">Commentaire</ion-label>
-                  <ion-textarea rows="4" v-model:value="reactivationComment" placeholder="Pourquoi souhaitez-vous réactiver" required />
+                  <ion-textarea :rows="4" v-model="reactivationComment" placeholder="Pourquoi souhaitez-vous réactiver" required />
                 </ion-item>
                 <ion-button type="submit" :disabled="submitting" class="ion-margin-top">
                   {{ submitting ? 'Envoi...' : 'Envoyer la demande' }}
@@ -147,6 +147,9 @@
             </div>
           </ion-card-content>
         </ion-card>
+        <ion-button expand="block" color="danger" @click="logout">
+          Déconnexion
+        </ion-button>
       </div>
     </ion-content>
   </ion-page>
@@ -156,6 +159,11 @@
 import { ref, reactive, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
+import {
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonLabel,
+  IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+  IonItem, IonInput, IonText, IonTextarea
+} from '@ionic/vue';
 
 interface User {
   id: number;
