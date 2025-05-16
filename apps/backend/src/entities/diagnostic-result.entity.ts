@@ -6,6 +6,9 @@ export class DiagnosticResult {
   id: string;
 
   @Column()
+  title: string;
+
+  @Column()
   minScore: number;
 
   @Column()
