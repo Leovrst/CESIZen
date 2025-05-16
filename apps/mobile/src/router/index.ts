@@ -36,7 +36,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/diagnostic',
-    name: 'Diagnostic',
+    name: 'diagnostic',
     component: DiagnosticView
   },
   {
@@ -48,7 +48,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/informations/:slug',
     name: 'Informations-detail',
     component: InformationDetailView,
-    meta: { requiresAuth: false }
   },
   {
     path: '/dashboard',

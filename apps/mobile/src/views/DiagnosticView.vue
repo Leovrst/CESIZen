@@ -232,6 +232,12 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import api from '@/services/api';
+import {
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+  IonItem, IonInput, IonList, IonListHeader, IonGrid,
+  IonRow, IonCol, IonTextarea, IonText
+} from '@ionic/vue';
 
 interface DiagnosticQuestion { id?: string; label: string; points: number; }
 interface DiagnosticResult   { id?: string; title: string; minScore: number; maxScore: number; message: string; }
