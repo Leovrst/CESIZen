@@ -2,6 +2,13 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+        <ion-back-button 
+          default-href="/informations" 
+          router-direction="back" 
+          text="" 
+        />
+        </ion-buttons>
         <ion-title>{{ info?.title }}</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -45,7 +52,7 @@
             </ion-item>
             <ion-item>
               <ion-label position="stacked">Contenu</ion-label>
-              <ion-textarea v-model:value="form.content" rows="6" />
+              <ion-textarea v-model:value="form.content" :rows="6" />
             </ion-item>
 
             <ion-button expand="block" color="success" @click="save()" class="ion-margin-top">
@@ -65,7 +72,25 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '@/services/api';
-
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonTextarea,
+  IonImg,
+  IonButtons,
+  IonBackButton,
+} from '@ionic/vue';
 
 interface InfoPage {
   id: string;
