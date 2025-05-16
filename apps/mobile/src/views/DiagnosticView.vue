@@ -20,13 +20,13 @@
             <ion-item v-for="(q, index) in questions" :key="q.id || index">
               <ion-input
                 placeholder="Texte de la question"
-                v-model:value="q.label"
+                v-model="q.label"
                 class="ion-margin-end"
               />
               <ion-input
                 type="number"
                 placeholder="Points"
-                v-model:value="q.points"
+                v-model="q.points"
                 style="width:80px"
               />
               <ion-button fill="clear" color="danger" @click="removeQuestion(index)">
@@ -49,21 +49,21 @@
                   <ion-col>
                     <ion-input
                       placeholder="Titre"
-                      v-model:value="r.title"
+                      v-model="r.title"
                     />
                   </ion-col>
                   <ion-col>
                     <ion-input
                       type="number"
                       placeholder="Min"
-                      v-model:value="r.minScore"
+                      v-model="r.minScore"
                     />
                   </ion-col>
                   <ion-col>
                     <ion-input
                       type="number"
                       placeholder="Max"
-                      v-model:value="r.maxScore"
+                      v-model="r.maxScore"
                     />
                   </ion-col>
                   <ion-col size="auto">
@@ -76,8 +76,8 @@
                   <ion-col>
                     <ion-textarea
                       placeholder="Description du résultat"
-                      v-model:value="r.message"
-                      rows="2"
+                      v-model="r.message"
+                      :rows="2"
                     />
                   </ion-col>
                 </ion-row>
@@ -154,6 +154,12 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import api from '@/services/api';
+import {
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+  IonItem, IonInput, IonList, IonListHeader, IonGrid,
+  IonRow, IonCol, IonTextarea, IonText
+} from '@ionic/vue';
 
 interface DiagnosticQuestion { id: string; label: string; points: number; }
 interface DiagnosticResult   { id: string; title: string; minScore: number; maxScore: number; message: string; }
