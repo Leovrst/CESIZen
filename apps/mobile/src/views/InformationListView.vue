@@ -93,7 +93,6 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
 import api from '@/services/api';
-import { useRouter } from 'vue-router';
 import {
   IonPage,
   IonHeader,
