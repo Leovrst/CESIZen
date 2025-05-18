@@ -5,7 +5,6 @@ import { DiagnosticService } from './diagnostic.service';
 import { UpdateQuestionsDto } from './dto/update-questions.dto';
 import { UpdateResultsDto } from './dto/update-results.dto';
 
-// Mock DiagnosticService
 const mockDiagnosticService = () => ({
   findAllQuestions: jest.fn(),
   findAllResults: jest.fn(),

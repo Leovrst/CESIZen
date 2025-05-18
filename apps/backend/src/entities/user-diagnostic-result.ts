@@ -1,6 +1,5 @@
-// src/entities/user-diagnostic-result.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../entities/user.entity'; // votre entité utilisateur
+import { User } from '../entities/user.entity';
 import { DiagnosticResult } from './diagnostic-result.entity';
 
 @Entity()

@@ -44,7 +44,7 @@ import { InformationPage } from './entities/information-page.entity';
           ReactivationRequest,
           InformationPage,
         ],
-        synchronize: true, // uniquement en dev
+        synchronize: true,
       }),
     }),
     UserModule,

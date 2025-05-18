@@ -60,7 +60,6 @@ import logo from '@/assets/cesizen-logo.png';
   max-width: 90%;
 }
 
-/* Ajustements pour petits écrans */
 @media (max-width: 400px) {
   .hero-title {
     font-size: 1.5rem;

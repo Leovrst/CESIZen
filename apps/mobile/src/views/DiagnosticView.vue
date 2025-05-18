@@ -347,7 +347,6 @@ async function saveQuestion(i: number) {
   const q = questions.value[i];
   try {
     if (q.id) {
-      // Ici, tu passes explicitement les bons champs
       await api.patch(`/diagnostic/admin/questions/${q.id}`, { label: q.label, points: q.points });
     } else {
       const resp = await api.post('/diagnostic/admin/questions', { label: q.label, points: q.points });

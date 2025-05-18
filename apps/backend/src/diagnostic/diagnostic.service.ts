@@ -20,7 +20,6 @@ export class DiagnosticService {
     private userResultRepo: Repository<UserDiagnosticResult>,
   ) {}
 
-  // Pour visiteurs + connectés
   findAllQuestions() {
     return this.questionRepo.find({ order: { id: 'ASC' } });
   }
@@ -58,7 +57,6 @@ export class DiagnosticService {
     return { ok: true };
   }
 
-  // Calculer le message selon le score total
   async evaluate(score: number, userId?: string) {
 
     let userDiagnostic: UserDiagnosticResult | null = null;
@@ -68,13 +66,11 @@ export class DiagnosticService {
     }
 
     if (!userDiagnostic) {
-      // calcul du message selon score
       const all = await this.findAllResults();
       const hit = all.find(r => score >= r.minScore && score <= r.maxScore);
       if (!hit) throw new NotFoundException('Pas de message pour ce score');
 
       if (userId) {
-        // on enregistre le résultat
         userDiagnostic = this.userResultRepo.create({
           userId,
           resultId: hit.id,
@@ -82,12 +78,10 @@ export class DiagnosticService {
         });
         await this.userResultRepo.save(userDiagnostic);
       } else {
-        // utilisateur anonyme → on renvoie juste le hit
         return { score, result: hit };
       }
     }
 
-    // 2) on a forcément un userDiag (soit existant, soit nouvellement créé)
     return { score: userDiagnostic.score, result: userDiagnostic.result };
   }
 
