@@ -1,3 +1,4 @@
-export class UpdateQuestionsDto {
-    questions: { id?: string; label: string; points: number }[];
+export class UpdateQuestionDto {
+    label?: string;
+    points?: number;
 }

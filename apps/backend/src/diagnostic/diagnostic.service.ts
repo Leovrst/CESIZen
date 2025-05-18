@@ -3,9 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DiagnosticQuestion } from '../entities/diagnostic-question.entity';
 import { DiagnosticResult } from '../entities/diagnostic-result.entity';
-import { UpdateQuestionsDto } from './dto/update-questions.dto';
-import { UpdateResultsDto } from './dto/update-results.dto';
+import { UpdateQuestionDto } from './dto/update-questions.dto';
+import { UpdateResultDto } from './dto/update-results.dto';
 import { UserDiagnosticResult } from '../entities/user-diagnostic-result';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { CreateResultDto } from './dto/create-result.dto';
 
 @Injectable()
 export class DiagnosticService {
@@ -26,19 +28,34 @@ export class DiagnosticService {
     return this.resultRepo.find({ order: { minScore: 'ASC' } });
   }
 
-  // Admin : mettre à jour la liste des questions (et points)
-  async updateQuestions(dto: UpdateQuestionsDto) {
-    // suppression + recréation (simplifié)
-    await this.questionRepo.clear();
-    const questions = dto.questions.map(q => this.questionRepo.create(q));
-    return this.questionRepo.save(questions);
+  async createQuestion(dto: CreateQuestionDto) {
+    const q = this.questionRepo.create(dto);
+    return this.questionRepo.save(q);
   }
 
-  // Admin : configurer la page de résultats
-  async updateResults(dto: UpdateResultsDto) {
-    await this.resultRepo.clear();
-    const results = dto.results.map(r => this.resultRepo.create(r));
-    return this.resultRepo.save(results);
+  async patchQuestion(id: string, dto: UpdateQuestionDto) {
+    await this.questionRepo.update(id, dto);
+    return this.questionRepo.findOne({ where: { id } });
+  }
+
+  async removeQuestion(id: string) {
+    await this.questionRepo.delete(id);
+    return { ok: true };
+  }
+
+  async createResult(dto: CreateResultDto) {
+    const r = this.resultRepo.create(dto);
+    return this.resultRepo.save(r);
+  }
+
+  async patchResult(id: string, dto: UpdateResultDto) {
+    await this.resultRepo.update(id, dto);
+    return this.resultRepo.findOne({ where: { id } });
+  }
+
+  async removeResult(id: string) {
+    await this.resultRepo.delete(id);
+    return { ok: true };
   }
 
   // Calculer le message selon le score total
