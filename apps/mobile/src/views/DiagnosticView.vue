@@ -118,7 +118,7 @@
                       <ion-textarea
                         placeholder="Description du résultat"
                         v-model="r.message"
-                        rows="2"
+                        :rows="2"
                       />
                     </ion-col>
                   </ion-row>
