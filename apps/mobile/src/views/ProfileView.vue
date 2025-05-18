@@ -156,7 +156,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
 import {
@@ -206,6 +206,13 @@ onMounted(async () => {
     }
     await fetchReactivationRequests();
   }
+});
+
+watch(message, val => {
+  if (val) setTimeout(() => (message.value = ''), 5000);
+});
+watch(error, val => {
+  if (val) setTimeout(() => (error.value = ''), 5000);
 });
 
 function startEditing() { isEditingProfile.value = true; }
