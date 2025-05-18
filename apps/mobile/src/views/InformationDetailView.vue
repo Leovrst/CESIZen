@@ -40,7 +40,7 @@
           <ion-card-content>
             <ion-item>
               <ion-label position="stacked">Titre</ion-label>
-              <ion-input v-model:value="form.title" />
+              <ion-input v-model="form.title" />
             </ion-item>
             <ion-item>
               <ion-label position="stacked">Image (remplace si fichier choisi)</ion-label>
@@ -48,11 +48,11 @@
             </ion-item>
             <ion-item>
               <ion-label position="stacked">Vidéo (URL YouTube)</ion-label>
-              <ion-input v-model:value="form.videoUrl" />
+              <ion-input v-model="form.videoUrl" />
             </ion-item>
             <ion-item>
               <ion-label position="stacked">Contenu</ion-label>
-              <ion-textarea v-model:value="form.content" :rows="6" />
+              <ion-textarea v-model="form.content" :rows="6" />
             </ion-item>
 
             <ion-button expand="block" color="success" @click="save()" class="ion-margin-top">
