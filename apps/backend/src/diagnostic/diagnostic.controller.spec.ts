@@ -2,22 +2,24 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { DiagnosticController } from './diagnostic.controller';
 import { DiagnosticService } from './diagnostic.service';
-import { UpdateQuestionsDto } from './dto/update-questions.dto';
-import { UpdateResultsDto } from './dto/update-results.dto';
 
 const mockDiagnosticService = () => ({
   findAllQuestions: jest.fn(),
   findAllResults: jest.fn(),
   evaluate: jest.fn(),
-  updateQuestions: jest.fn(),
-  updateResults: jest.fn(),
+  createQuestion: jest.fn(),
+  patchQuestion: jest.fn(),
+  removeQuestion: jest.fn(),
+  createResult: jest.fn(),
+  patchResult: jest.fn(),
+  removeResult: jest.fn(),
   getUserResult: jest.fn(),
   clearUserResult: jest.fn(),
 });
 
 describe('DiagnosticController', () => {
   let controller: DiagnosticController;
-  let service;
+  let service: ReturnType<typeof mockDiagnosticService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +30,8 @@ describe('DiagnosticController', () => {
     }).compile();
 
     controller = module.get<DiagnosticController>(DiagnosticController);
-    service = module.get<DiagnosticService>(DiagnosticService);
+    // Cast du service pour l'autocomplétion et la compatibilité jest
+    service = module.get<DiagnosticService>(DiagnosticService) as unknown as ReturnType<typeof mockDiagnosticService>;
   });
 
   it('should be defined', () => {
@@ -81,27 +84,79 @@ describe('DiagnosticController', () => {
     });
   });
 
-  describe('updateQuestions', () => {
-    it('should call service.updateQuestions with dto', async () => {
-      const dto: UpdateQuestionsDto = { questions: [{ label: 'Q', points: 1 }] };
-      const saved = [{ id: 1 }];
-      service.updateQuestions.mockResolvedValue(saved);
+  // CRUD for Question
+  describe('createQuestion', () => {
+    it('should call service.createQuestion with dto', async () => {
+      const dto = { label: 'Q1', points: 2 };
+      const saved = { id: '1', ...dto };
+      service.createQuestion.mockResolvedValue(saved);
 
-      const res = await controller.updateQuestions(dto);
-      expect(service.updateQuestions).toHaveBeenCalledWith(dto);
-      expect(res).toBe(saved);
+      const result = await controller.createQuestion(dto);
+      expect(service.createQuestion).toHaveBeenCalledWith(dto);
+      expect(result).toBe(saved);
     });
   });
 
-  describe('updateResults', () => {
-    it('should call service.updateResults with dto', async () => {
-      const dto: UpdateResultsDto = { results: [{ message: 'R', minScore: 0, maxScore: 5 }] };
-      const saved = [{ id: 2 }];
-      service.updateResults.mockResolvedValue(saved);
+  describe('updateQuestion', () => {
+    it('should call service.patchQuestion with id and dto', async () => {
+      const id = '123';
+      const dto = { label: 'modifié' };
+      const patched = { id, ...dto };
+      service.patchQuestion.mockResolvedValue(patched);
 
-      const res = await controller.updateResults(dto);
-      expect(service.updateResults).toHaveBeenCalledWith(dto);
-      expect(res).toBe(saved);
+      const result = await controller.updateQuestion(id, dto);
+      expect(service.patchQuestion).toHaveBeenCalledWith(id, dto);
+      expect(result).toBe(patched);
+    });
+  });
+
+  describe('deleteQuestion', () => {
+    it('should call service.removeQuestion with id', async () => {
+      const id = '456';
+      const res = { ok: true };
+      service.removeQuestion.mockResolvedValue(res);
+
+      const result = await controller.deleteQuestion(id);
+      expect(service.removeQuestion).toHaveBeenCalledWith(id);
+      expect(result).toBe(res);
+    });
+  });
+
+  // CRUD for Result
+  describe('createResult', () => {
+    it('should call service.createResult with dto', async () => {
+      const dto = { title: 'T', minScore: 0, maxScore: 5, message: 'msg' };
+      const saved = { id: '10', ...dto };
+      service.createResult.mockResolvedValue(saved);
+
+      const result = await controller.createResult(dto);
+      expect(service.createResult).toHaveBeenCalledWith(dto);
+      expect(result).toBe(saved);
+    });
+  });
+
+  describe('updateResult', () => {
+    it('should call service.patchResult with id and dto', async () => {
+      const id = '999';
+      const dto = { message: 'nouveau message' };
+      const patched = { id, ...dto };
+      service.patchResult.mockResolvedValue(patched);
+
+      const result = await controller.updateResult(id, dto);
+      expect(service.patchResult).toHaveBeenCalledWith(id, dto);
+      expect(result).toBe(patched);
+    });
+  });
+
+  describe('deleteResult', () => {
+    it('should call service.removeResult with id', async () => {
+      const id = '111';
+      const res = { ok: true };
+      service.removeResult.mockResolvedValue(res);
+
+      const result = await controller.deleteResult(id);
+      expect(service.removeResult).toHaveBeenCalledWith(id);
+      expect(result).toBe(res);
     });
   });
 

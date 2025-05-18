@@ -7,18 +7,16 @@ import { DiagnosticService } from './diagnostic.service';
 import { DiagnosticQuestion } from '../entities/diagnostic-question.entity';
 import { DiagnosticResult } from '../entities/diagnostic-result.entity';
 import { UserDiagnosticResult } from '../entities/user-diagnostic-result';
-import { UpdateQuestionsDto } from './dto/update-questions.dto';
-import { UpdateResultsDto } from './dto/update-results.dto';
 
 type MockRepository<T extends ObjectLiteral = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 const createMockRepository = <T extends ObjectLiteral = any>(): MockRepository<T> => ({
   find: jest.fn(),
   findOne: jest.fn(),
-  clear: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
   delete: jest.fn(),
+  update: jest.fn(),
 });
 
 describe('DiagnosticService', () => {
@@ -70,37 +68,83 @@ describe('DiagnosticService', () => {
     });
   });
 
-  describe('updateQuestions', () => {
-    it('should clear and save new questions', async () => {
-      const dto: UpdateQuestionsDto = { questions: [{ label: 'Q1', points: 1 }] };
-      const createdEntity = { id: '1', label: 'Label1', text: 'Q1', points: 1 } as DiagnosticQuestion;
-      questionRepo.create!.mockReturnValue(createdEntity);
-      questionRepo.save!.mockResolvedValue([createdEntity]);
-      questionRepo.clear!.mockResolvedValue(undefined);
+  describe('createQuestion', () => {
+    it('should create and save a question', async () => {
+      const dto = { label: 'Q1', points: 1 };
+      const entity = { id: '1', ...dto } as DiagnosticQuestion;
+      questionRepo.create!.mockReturnValue(entity);
+      questionRepo.save!.mockResolvedValue(entity);
 
-      const result = await service.updateQuestions(dto);
-
-      expect(questionRepo.clear).toHaveBeenCalled();
-      expect(questionRepo.create).toHaveBeenCalledWith(dto.questions[0]);
-      expect(questionRepo.save).toHaveBeenCalledWith([createdEntity]);
-      expect(result).toEqual([createdEntity]);
+      const res = await service.createQuestion(dto);
+      expect(questionRepo.create).toHaveBeenCalledWith(dto);
+      expect(questionRepo.save).toHaveBeenCalledWith(entity);
+      expect(res).toBe(entity);
     });
   });
 
-  describe('updateResults', () => {
-    it('should clear and save new results', async () => {
-      const dto: UpdateResultsDto = { results: [{ message: 'R1', minScore: 0, maxScore: 10 }] };
-      const createdEntity = { message: 'R1', minScore: 0, maxScore: 10 } as DiagnosticResult;
-      resultRepo.create!.mockReturnValue(createdEntity);
-      resultRepo.save!.mockResolvedValue([createdEntity]);
-      resultRepo.clear!.mockResolvedValue(undefined);
+  describe('patchQuestion', () => {
+    it('should update and return the question', async () => {
+      const id = 'abc';
+      const dto = { label: 'changed' };
+      const updated = { id, ...dto } as DiagnosticQuestion;
+      questionRepo.update!.mockResolvedValue(undefined);
+      questionRepo.findOne!.mockResolvedValue(updated);
 
-      const result = await service.updateResults(dto);
+      const res = await service.patchQuestion(id, dto);
+      expect(questionRepo.update).toHaveBeenCalledWith(id, dto);
+      expect(questionRepo.findOne).toHaveBeenCalledWith({ where: { id } });
+      expect(res).toBe(updated);
+    });
+  });
 
-      expect(resultRepo.clear).toHaveBeenCalled();
-      expect(resultRepo.create).toHaveBeenCalledWith(dto.results[0]);
-      expect(resultRepo.save).toHaveBeenCalledWith([createdEntity]);
-      expect(result).toEqual([createdEntity]);
+  describe('removeQuestion', () => {
+    it('should delete the question', async () => {
+      const id = 'delid';
+      questionRepo.delete!.mockResolvedValue(undefined);
+
+      const res = await service.removeQuestion(id);
+      expect(questionRepo.delete).toHaveBeenCalledWith(id);
+      expect(res).toEqual({ ok: true });
+    });
+  });
+
+  describe('createResult', () => {
+    it('should create and save a result', async () => {
+      const dto = { title: 'A', minScore: 0, maxScore: 5, message: 'M' };
+      const entity = { id: '2', ...dto } as DiagnosticResult;
+      resultRepo.create!.mockReturnValue(entity);
+      resultRepo.save!.mockResolvedValue(entity);
+
+      const res = await service.createResult(dto);
+      expect(resultRepo.create).toHaveBeenCalledWith(dto);
+      expect(resultRepo.save).toHaveBeenCalledWith(entity);
+      expect(res).toBe(entity);
+    });
+  });
+
+  describe('patchResult', () => {
+    it('should update and return the result', async () => {
+      const id = 'r1';
+      const dto = { title: 'B' };
+      const updated = { id, ...dto } as DiagnosticResult;
+      resultRepo.update!.mockResolvedValue(undefined);
+      resultRepo.findOne!.mockResolvedValue(updated);
+
+      const res = await service.patchResult(id, dto);
+      expect(resultRepo.update).toHaveBeenCalledWith(id, dto);
+      expect(resultRepo.findOne).toHaveBeenCalledWith({ where: { id } });
+      expect(res).toBe(updated);
+    });
+  });
+
+  describe('removeResult', () => {
+    it('should delete the result', async () => {
+      const id = 'delres';
+      resultRepo.delete!.mockResolvedValue(undefined);
+
+      const res = await service.removeResult(id);
+      expect(resultRepo.delete).toHaveBeenCalledWith(id);
+      expect(res).toEqual({ ok: true });
     });
   });
 
