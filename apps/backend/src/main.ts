@@ -23,6 +23,12 @@ async function bootstrap() {
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
   app.use('/users/login', loginRateLimiter);
+  app.use((req, res, next) => {
+    if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect('https://' + req.headers.host + req.url);
+    }
+    next();
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
