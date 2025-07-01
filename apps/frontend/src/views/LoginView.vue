@@ -53,7 +53,11 @@
     window.location.reload();
   } catch (err: any) {
     console.error(err);
-    error.value = err.response?.data?.message || "Une erreur s'est produite lors de la connexion.";
+    if (err.response?.status === 429) {
+      error.value = err.response.data?.message || "Trop de tentatives. Réessayez plus tard.";
+    } else {
+      error.value = err.response?.data?.message || "Une erreur s'est produite lors de la connexion.";
+    }
   }
 }
   </script>
