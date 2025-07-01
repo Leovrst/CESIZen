@@ -76,9 +76,12 @@ async function login() {
     await router.push('/');
     window.location.reload();
   } catch (err: any) {
-    console.error('Erreur API login :', err);
-    error.value = err.response?.data?.message
-      || "Une erreur s'est produite lors de la connexion.";
+    console.error(err);
+    if (err.response?.status === 429) {
+      error.value = err.response.data?.message || "Trop de tentatives. Réessayez plus tard.";
+    } else {
+      error.value = err.response?.data?.message || "Une erreur s'est produite lors de la connexion.";
+    }
   }
 }
 </script>
