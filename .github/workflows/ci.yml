@@ -36,5 +36,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18
-    - run: npm ci
-    - run: npm run test:cov
+    - name: Install dependencies and test backend
+      working-directory: ./apps/backend 
+      run: |
+        npm ci
+        npm run test:cov
