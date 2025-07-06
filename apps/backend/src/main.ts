@@ -19,7 +19,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:8100'],
+    origin: ['http://localhost:5173', 'http://localhost:8100', 'https://cesi-zen-mobile.vercel.app'],
     credentials: true,
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
