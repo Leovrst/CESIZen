@@ -31,18 +31,16 @@ jobs:
       JWT_SECRET: testsecret
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-    - name: Install dependencies and test backend
-      working-directory: ./apps/backend 
-      name: Set Node.js 20
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      run: |
-        npm ci
-        npm run test:cov
+      - name: Set Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies and test backend
+        working-directory: ./apps/backend
+        run: |
+          npm ci
+          npm run test:cov
