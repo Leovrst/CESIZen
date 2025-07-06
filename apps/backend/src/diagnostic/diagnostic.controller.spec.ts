@@ -1,7 +1,9 @@
+/// <reference types="jest" />
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { DiagnosticController } from './diagnostic.controller';
 import { DiagnosticService } from './diagnostic.service';
+import { describe, beforeEach, it, expect } from '@jest/globals';
 
 const mockDiagnosticService = () => ({
   findAllQuestions: jest.fn(),

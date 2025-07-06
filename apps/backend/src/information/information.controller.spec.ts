@@ -2,6 +2,7 @@ import { InformationPageController } from './information.controller';
 import { InformationPageService } from './information.service';
 import { CreateInformationPageDto } from './dto/create-information-page.dto';
 import { UpdateInformationPageDto } from './dto/update-information.dto';
+import { plainToInstance } from 'class-transformer';
 
 describe('InformationPageController', () => {
   let controller: InformationPageController;
@@ -74,7 +75,11 @@ describe('InformationPageController', () => {
     it('should call service.update with imageUrl when file is provided', async () => {
       const id = '123';
       const file = { filename: 'update.png' } as Express.Multer.File;
-      const dto: UpdateInformationPageDto & { removeImage?: boolean } = { title: 'Up', content: 'Content', removeImage: true };
+      const dto = plainToInstance(UpdateInformationPageDto, {
+        title: 'Up',
+        content: 'Content',
+        removeImage: true,
+      });
       const expected = { id, title: 'Up', content: 'Content', imageUrl: '/uploads/update.png' };
       service.update.mockResolvedValue(expected as any);
 
@@ -85,7 +90,10 @@ describe('InformationPageController', () => {
 
     it('should call service.update without imageUrl when no file is provided', async () => {
       const id = '456';
-      const dto: UpdateInformationPageDto = { title: 'NoFile', content: 'Text' };
+      const dto = plainToInstance(UpdateInformationPageDto, {
+        title: 'NoFile',
+        content: 'Text',
+      });
       service.update.mockResolvedValue({} as any);
 
       const result = await controller.update(id, undefined as any, dto);
