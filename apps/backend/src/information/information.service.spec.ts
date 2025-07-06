@@ -6,6 +6,7 @@ import { InformationPageService } from './information.service';
 import { InformationPage } from '../entities/information-page.entity';
 import { CreateInformationPageDto } from './dto/create-information-page.dto';
 import { UpdateInformationPageDto } from './dto/update-information.dto';
+import { plainToInstance } from 'class-transformer';
 
 type MockRepository<T extends ObjectLiteral = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
@@ -99,7 +100,7 @@ describe('InformationPageService', () => {
 
   describe('update', () => {
     it('should update and return updated page', async () => {
-      const dto: UpdateInformationPageDto = { title: 'New' };
+      const dto = plainToInstance(UpdateInformationPageDto, { title: 'New' });
       const updated = {
         id: '1',
         slug: 's',
