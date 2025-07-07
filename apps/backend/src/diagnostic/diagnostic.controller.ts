@@ -1,4 +1,17 @@
-import { Controller, Get, Put, Body, UseGuards, Post, Query, Request, NotFoundException, Delete, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Put,
+  Body,
+  UseGuards,
+  Post,
+  Query,
+  Request,
+  NotFoundException,
+  Delete,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { DiagnosticService } from './diagnostic.service';
 import { UpdateQuestionDto } from './dto/update-questions.dto';
 import { UpdateResultDto } from './dto/update-results.dto';
@@ -23,10 +36,7 @@ export class DiagnosticController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Get('evaluate')
-  async evaluateScore(
-    @Query('score') score: string,
-    @Request() req,
-  ) {
+  async evaluateScore(@Query('score') score: string, @Request() req) {
     const numeric = parseInt(score, 10);
     const userId = req.user?.id;
     return this.svc.evaluate(numeric, userId);
@@ -40,10 +50,7 @@ export class DiagnosticController {
 
   @UseGuards(AuthGuard('jwt'))
   @Patch('admin/questions/:id')
-  updateQuestion(
-    @Param('id') id: string,
-    @Body() dto: UpdateQuestionDto,
-  ) {
+  updateQuestion(@Param('id') id: string, @Body() dto: UpdateQuestionDto) {
     return this.svc.patchQuestion(id, dto);
   }
 
@@ -61,10 +68,7 @@ export class DiagnosticController {
 
   @UseGuards(AuthGuard('jwt'))
   @Patch('admin/results/:id')
-  updateResult(
-    @Param('id') id: string,
-    @Body() dto: UpdateResultDto,
-  ) {
+  updateResult(@Param('id') id: string, @Body() dto: UpdateResultDto) {
     return this.svc.patchResult(id, dto);
   }
 

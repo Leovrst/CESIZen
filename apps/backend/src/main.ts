@@ -12,14 +12,21 @@ async function bootstrap() {
     handler: (req, res) => {
       res.status(429).json({
         statusCode: 429,
-        message: 'Trop de tentatives de connexion. Réessayez dans quelques minutes.',
+        message:
+          'Trop de tentatives de connexion. Réessayez dans quelques minutes.',
         error: 'Too Many Requests',
       });
     },
   });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+  );
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:8100', 'https://cesi-zen-mobile.vercel.app'],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:8100',
+      'https://cesi-zen-mobile.vercel.app',
+    ],
     credentials: true,
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
@@ -37,7 +44,10 @@ async function bootstrap() {
     }),
   );
   app.use((req, res, next) => {
-    if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    if (
+      process.env.NODE_ENV === 'production' &&
+      req.headers['x-forwarded-proto'] !== 'https'
+    ) {
       return res.redirect('https://' + req.headers.host + req.url);
     }
     next();

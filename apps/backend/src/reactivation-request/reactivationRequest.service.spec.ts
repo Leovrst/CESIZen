@@ -1,6 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ReactivationRequestService } from './reactivationRequest.service';
-import { ReactivationRequest, RequestStatus } from '../entities/reactivationRequest.entity';
+import {
+  ReactivationRequest,
+  RequestStatus,
+} from '../entities/reactivationRequest.entity';
 import { ReactivationRequestRepository } from './dto/reactivationRequest.repository';
 import { UserService } from '../user/user.service';
 
@@ -38,7 +41,9 @@ describe('ReactivationRequestService', () => {
     it('should throw NotFoundException if user not found', async () => {
       mockUserService.findUserById.mockResolvedValue(null as any);
 
-      await expect(service.createRequest('unknown-user', 'comment')).rejects.toThrow(NotFoundException);
+      await expect(
+        service.createRequest('unknown-user', 'comment'),
+      ).rejects.toThrow(NotFoundException);
       expect(mockUserService.findUserById).toHaveBeenCalledWith('unknown-user');
     });
 
@@ -46,7 +51,9 @@ describe('ReactivationRequestService', () => {
       mockUserService.findUserById.mockResolvedValue(user);
       mockRepo.findPendingByUserId.mockResolvedValue(request as any);
 
-      await expect(service.createRequest(user.id, 'comment')).rejects.toThrow(BadRequestException);
+      await expect(service.createRequest(user.id, 'comment')).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockRepo.findPendingByUserId).toHaveBeenCalledWith(user.id);
     });
 
@@ -55,10 +62,12 @@ describe('ReactivationRequestService', () => {
       mockRepo.findPendingByUserId.mockResolvedValue(null);
       mockRepo.hasRecentRejected.mockResolvedValue(true);
 
-      await expect(service.createRequest(user.id, 'comment')).rejects.toThrow(BadRequestException);
+      await expect(service.createRequest(user.id, 'comment')).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockRepo.hasRecentRejected).toHaveBeenCalledWith(
         user.id,
-        expect.any(Date)
+        expect.any(Date),
       );
     });
 
@@ -92,18 +101,29 @@ describe('ReactivationRequestService', () => {
     it('should throw NotFoundException if request not found', async () => {
       mockRepo.updateRequest.mockResolvedValue(null as any);
 
-      await expect(service.approveRequest('invalid-id')).rejects.toThrow(NotFoundException);
-      expect(mockRepo.updateRequest).toHaveBeenCalledWith('invalid-id', { status: RequestStatus.APPROVED });
+      await expect(service.approveRequest('invalid-id')).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockRepo.updateRequest).toHaveBeenCalledWith('invalid-id', {
+        status: RequestStatus.APPROVED,
+      });
     });
 
     it('should approve the request and update the user', async () => {
-      const approvedRequest = { ...request, status: RequestStatus.APPROVED } as any;
+      const approvedRequest = {
+        ...request,
+        status: RequestStatus.APPROVED,
+      } as any;
       mockRepo.updateRequest.mockResolvedValue(approvedRequest);
 
       const result = await service.approveRequest(request.id);
 
-      expect(mockRepo.updateRequest).toHaveBeenCalledWith(request.id, { status: RequestStatus.APPROVED });
-      expect(mockUserService.updateUser).toHaveBeenCalledWith(user.id, { suspended: false });
+      expect(mockRepo.updateRequest).toHaveBeenCalledWith(request.id, {
+        status: RequestStatus.APPROVED,
+      });
+      expect(mockUserService.updateUser).toHaveBeenCalledWith(user.id, {
+        suspended: false,
+      });
       expect(result).toBe(approvedRequest);
     });
   });
@@ -112,17 +132,26 @@ describe('ReactivationRequestService', () => {
     it('should throw NotFoundException if request not found', async () => {
       mockRepo.updateRequest.mockResolvedValue(null as any);
 
-      await expect(service.rejectRequest('invalid-id', 'Nope')).rejects.toThrow(NotFoundException);
-      expect(mockRepo.updateRequest).toHaveBeenCalledWith('invalid-id', { status: RequestStatus.REJECTED });
+      await expect(service.rejectRequest('invalid-id', 'Nope')).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockRepo.updateRequest).toHaveBeenCalledWith('invalid-id', {
+        status: RequestStatus.REJECTED,
+      });
     });
 
     it('should reject the request', async () => {
-      const rejectedRequest = { ...request, status: RequestStatus.REJECTED } as any;
+      const rejectedRequest = {
+        ...request,
+        status: RequestStatus.REJECTED,
+      } as any;
       mockRepo.updateRequest.mockResolvedValue(rejectedRequest);
 
       const result = await service.rejectRequest(request.id, 'Not valid');
 
-      expect(mockRepo.updateRequest).toHaveBeenCalledWith(request.id, { status: RequestStatus.REJECTED });
+      expect(mockRepo.updateRequest).toHaveBeenCalledWith(request.id, {
+        status: RequestStatus.REJECTED,
+      });
       expect(result).toBe(rejectedRequest);
       expect(mockUserService.updateUser).not.toHaveBeenCalled();
     });

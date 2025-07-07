@@ -58,7 +58,6 @@ export class DiagnosticService {
   }
 
   async evaluate(score: number, userId?: string) {
-
     let userDiagnostic: UserDiagnosticResult | null = null;
 
     if (userId) {
@@ -67,7 +66,7 @@ export class DiagnosticService {
 
     if (!userDiagnostic) {
       const all = await this.findAllResults();
-      const hit = all.find(r => score >= r.minScore && score <= r.maxScore);
+      const hit = all.find((r) => score >= r.minScore && score <= r.maxScore);
       if (!hit) throw new NotFoundException('Pas de message pour ce score');
 
       if (userId) {

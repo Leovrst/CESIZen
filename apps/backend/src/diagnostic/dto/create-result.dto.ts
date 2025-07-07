@@ -1,5 +1,5 @@
-import { Type } from "class-transformer";
-import { IsInt, IsNumber, IsString } from "class-validator";
+import { Type } from 'class-transformer';
+import { IsInt, IsNumber, IsString } from 'class-validator';
 
 export class CreateResultDto {
   @IsString()

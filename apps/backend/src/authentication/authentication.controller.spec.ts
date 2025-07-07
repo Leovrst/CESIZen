@@ -27,22 +27,35 @@ describe('AuthenticationController', () => {
   });
 
   describe('login', () => {
-    const loginDto: LoginDto = { email: 'user@example.com', password: 'pass123' };
+    const loginDto: LoginDto = {
+      email: 'user@example.com',
+      password: 'pass123',
+    };
 
     it('should call authenticationService.login and return its result', async () => {
-      const expected = { accessToken: 'token', user: { id: 1, email: loginDto.email } };
+      const expected = {
+        accessToken: 'token',
+        user: { id: 1, email: loginDto.email },
+      };
       (authService.login as jest.Mock).mockResolvedValue(expected);
 
       const result = await controller.login(loginDto);
 
-      expect(authService.login).toHaveBeenCalledWith(loginDto.email, loginDto.password);
+      expect(authService.login).toHaveBeenCalledWith(
+        loginDto.email,
+        loginDto.password,
+      );
       expect(result).toEqual(expected);
     });
 
     it('should throw UnauthorizedException when authenticationService.login throws it', async () => {
-      (authService.login as jest.Mock).mockRejectedValue(new UnauthorizedException('Invalid credentials'));
+      (authService.login as jest.Mock).mockRejectedValue(
+        new UnauthorizedException('Invalid credentials'),
+      );
 
-      await expect(controller.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

@@ -1,19 +1,19 @@
-import { IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateInformationPageDto {
-    @IsString()
-    @IsNotEmpty()
-    slug: string;
-    
-    @IsString()
-    @IsNotEmpty()
-    title: string;
+  @IsString()
+  @IsNotEmpty()
+  slug: string;
 
-    @IsString()
-    @IsNotEmpty()
-    content: string;
+  @IsString()
+  @IsNotEmpty()
+  title: string;
 
-    @IsOptional()
-    @IsUrl()
-    videoUrl?: string;
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @IsOptional()
+  @IsUrl()
+  videoUrl?: string;
 }

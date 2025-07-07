@@ -28,7 +28,7 @@ describe('UserController', () => {
     }).compile();
 
     controller = module.get<UserController>(UserController);
-    userService = module.get(UserService) as jest.Mocked<UserService>;
+    userService = module.get(UserService);
   });
 
   describe('register', () => {
@@ -40,7 +40,13 @@ describe('UserController', () => {
         password: 'secret',
         role: UserRole.USER,
       };
-      const createdUser: User = { id: '1', ...dto, password: 'hashed', registeredAt: new Date(), suspended: false } as User;
+      const createdUser: User = {
+        id: '1',
+        ...dto,
+        password: 'hashed',
+        registeredAt: new Date(),
+        suspended: false,
+      } as User;
       userService.createUser.mockResolvedValue(createdUser);
 
       const result = await controller.register(dto);
@@ -101,8 +107,13 @@ describe('UserController', () => {
       userService.resetPassword.mockResolvedValue(undefined);
       const body = { newPassword: 'newSecret' };
       const result = await controller.resetPassword('1', body);
-      expect(userService.resetPassword).toHaveBeenCalledWith('1', body.newPassword);
-      expect(result).toEqual({ message: 'Mot de passe réinitialisé avec succès.' });
+      expect(userService.resetPassword).toHaveBeenCalledWith(
+        '1',
+        body.newPassword,
+      );
+      expect(result).toEqual({
+        message: 'Mot de passe réinitialisé avec succès.',
+      });
     });
   });
 });

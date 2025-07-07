@@ -1,7 +1,10 @@
 import { ReactivationRequestController } from './reactivationRequest.controller';
 import { ReactivationRequestService } from './reactivationRequest.service';
 import { CreateReactivationRequestDto } from './dto/createReactivationRequest.dto';
-import { ReactivationRequest, RequestStatus } from '../entities/reactivationRequest.entity';
+import {
+  ReactivationRequest,
+  RequestStatus,
+} from '../entities/reactivationRequest.entity';
 import { BadRequestException } from '@nestjs/common';
 
 describe('ReactivationRequestController', () => {
@@ -29,22 +32,30 @@ describe('ReactivationRequestController', () => {
 
   describe('createRequest', () => {
     it('should throw BadRequestException if userId is missing', async () => {
-        const dto = { comment: 'no user id' } as any as CreateReactivationRequestDto;
-        await expect(controller.createRequest(dto))
-        .rejects
-        .toThrow(BadRequestException);
+      const dto = {
+        comment: 'no user id',
+      } as any as CreateReactivationRequestDto;
+      await expect(controller.createRequest(dto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should call service.createRequest with correct params', async () => {
-        const dto: CreateReactivationRequestDto = { userId: 'user-id', comment: 'please' };
-        mockService.createRequest.mockResolvedValue(request);
+      const dto: CreateReactivationRequestDto = {
+        userId: 'user-id',
+        comment: 'please',
+      };
+      mockService.createRequest.mockResolvedValue(request);
 
-        const result = await controller.createRequest(dto);
+      const result = await controller.createRequest(dto);
 
-        expect(mockService.createRequest).toHaveBeenCalledWith('user-id', 'please');
-        expect(result).toBe(request);
+      expect(mockService.createRequest).toHaveBeenCalledWith(
+        'user-id',
+        'please',
+      );
+      expect(result).toBe(request);
     });
-    });
+  });
 
   describe('getAllRequests', () => {
     it('should return all requests', async () => {
@@ -73,9 +84,15 @@ describe('ReactivationRequestController', () => {
       const rejectionComment = 'no good';
       mockService.rejectRequest.mockResolvedValue(request);
 
-      const result = await controller.rejectRequest(request.id, rejectionComment);
+      const result = await controller.rejectRequest(
+        request.id,
+        rejectionComment,
+      );
 
-      expect(mockService.rejectRequest).toHaveBeenCalledWith(request.id, rejectionComment);
+      expect(mockService.rejectRequest).toHaveBeenCalledWith(
+        request.id,
+        rejectionComment,
+      );
       expect(result).toBe(request);
     });
   });

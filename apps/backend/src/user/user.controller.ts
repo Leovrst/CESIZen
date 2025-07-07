@@ -1,4 +1,14 @@
-import { Controller, Post, Body, Get, Param, Put, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Put,
+  Delete,
+  ParseUUIDPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -12,8 +22,14 @@ export class UserController {
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto): Promise<User> {
     const { firstName, lastName, email, password, role } = createUserDto;
-    return this.userService.createUser(firstName, lastName, email, password, role);
-  }  
+    return this.userService.createUser(
+      firstName,
+      lastName,
+      email,
+      password,
+      role,
+    );
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
@@ -35,7 +51,9 @@ export class UserController {
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', ParseUUIDPipe) id: string): Promise<{ message: string }> {
+  async deleteUser(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<{ message: string }> {
     await this.userService.deleteUser(id);
     return { message: 'Utilisateur supprimé avec succès.' };
   }
@@ -43,7 +61,7 @@ export class UserController {
   @Post('reset-password/:id')
   async resetPassword(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() body: { newPassword: string }
+    @Body() body: { newPassword: string },
   ): Promise<{ message: string }> {
     await this.userService.resetPassword(id, body.newPassword);
     return { message: 'Mot de passe réinitialisé avec succès.' };

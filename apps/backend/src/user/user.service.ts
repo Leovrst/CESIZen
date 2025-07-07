@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User, UserRole } from '../entities/user.entity';
 import { UserRepository } from './dto/user.repository';
@@ -37,7 +41,9 @@ export class UserService {
   async findUserByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new NotFoundException(`Aucun utilisateur trouvé avec l'email ${email}`);
+      throw new NotFoundException(
+        `Aucun utilisateur trouvé avec l'email ${email}`,
+      );
     }
     return user;
   }
@@ -50,7 +56,10 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: string, updateData: Partial<UpdateUserDto>): Promise<User> {
+  async updateUser(
+    id: string,
+    updateData: Partial<UpdateUserDto>,
+  ): Promise<User> {
     const dataToUpdate: Partial<User> = { ...updateData };
 
     if (dataToUpdate.password) {
@@ -73,5 +82,4 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.userRepository.updateUser(id, { password: hashedPassword });
   }
-
 }

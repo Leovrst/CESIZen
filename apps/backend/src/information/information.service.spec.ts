@@ -8,9 +8,13 @@ import { CreateInformationPageDto } from './dto/create-information-page.dto';
 import { UpdateInformationPageDto } from './dto/update-information.dto';
 import { plainToInstance } from 'class-transformer';
 
-type MockRepository<T extends ObjectLiteral = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+type MockRepository<T extends ObjectLiteral = any> = Partial<
+  Record<keyof Repository<T>, jest.Mock>
+>;
 
-const createMockRepository = <T extends ObjectLiteral = any>(): MockRepository<T> => ({
+const createMockRepository = <
+  T extends ObjectLiteral = any,
+>(): MockRepository<T> => ({
   findAndCount: jest.fn(),
   findOneOrFail: jest.fn(),
   create: jest.fn(),
@@ -35,7 +39,9 @@ describe('InformationPageService', () => {
     }).compile();
 
     service = module.get<InformationPageService>(InformationPageService);
-    repo = module.get<MockRepository<InformationPage>>(getRepositoryToken(InformationPage));
+    repo = module.get<MockRepository<InformationPage>>(
+      getRepositoryToken(InformationPage),
+    );
   });
 
   describe('findAll', () => {
@@ -75,18 +81,27 @@ describe('InformationPageService', () => {
       repo.findOneOrFail!.mockResolvedValue(page);
 
       await expect(service.findOneBySlug('test')).resolves.toEqual(page);
-      expect(repo.findOneOrFail).toHaveBeenCalledWith({ where: { slug: 'test' } });
+      expect(repo.findOneOrFail).toHaveBeenCalledWith({
+        where: { slug: 'test' },
+      });
     });
 
     it('should throw NotFoundException if not found', async () => {
       repo.findOneOrFail!.mockRejectedValue(new Error());
-      await expect(service.findOneBySlug('missing')).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.findOneBySlug('missing')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
   describe('create', () => {
     it('should create and save a page', async () => {
-      const dto: CreateInformationPageDto = { slug: 's', title: 'T', content: 'C', videoUrl: undefined } as any;
+      const dto: CreateInformationPageDto = {
+        slug: 's',
+        title: 'T',
+        content: 'C',
+        videoUrl: undefined,
+      } as any;
       const entity = { ...dto } as InformationPage;
       repo.create!.mockReturnValue(entity);
       repo.save!.mockResolvedValue(entity);
@@ -127,7 +142,9 @@ describe('InformationPageService', () => {
 
     it('should throw NotFoundException if no record deleted', async () => {
       repo.delete!.mockResolvedValue({ affected: 0 } as any);
-      await expect(service.remove('1')).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.remove('1')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 });

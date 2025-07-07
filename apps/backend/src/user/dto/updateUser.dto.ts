@@ -1,4 +1,11 @@
-import { IsEmail, IsOptional, IsString, MinLength, IsBoolean, IsEnum } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  MinLength,
+  IsBoolean,
+  IsEnum,
+} from 'class-validator';
 import { UserRole } from '../../entities/user.entity';
 
 export class UpdateUserDto {
@@ -15,11 +22,15 @@ export class UpdateUserDto {
   readonly email?: string;
 
   @IsOptional()
-  @MinLength(8, { message: 'Le mot de passe doit contenir au moins 8 caractères.' })
+  @MinLength(8, {
+    message: 'Le mot de passe doit contenir au moins 8 caractères.',
+  })
   readonly password?: string;
 
   @IsOptional()
-  @IsEnum(UserRole, { message: "Le rôle doit être l'un des suivants: user, admin, superAdmin" })
+  @IsEnum(UserRole, {
+    message: "Le rôle doit être l'un des suivants: user, admin, superAdmin",
+  })
   readonly role?: UserRole;
 
   @IsOptional()

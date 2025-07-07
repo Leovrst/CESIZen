@@ -9,11 +9,10 @@ import { UserDiagnosticResult } from 'src/entities/user-diagnostic-result';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      DiagnosticQuestion, 
-      DiagnosticResult, 
-      UserDiagnosticResult
+      DiagnosticQuestion,
+      DiagnosticResult,
+      UserDiagnosticResult,
     ]),
-    
   ],
   providers: [DiagnosticService],
   controllers: [DiagnosticController],

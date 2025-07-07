@@ -8,9 +8,13 @@ import { DiagnosticQuestion } from '../entities/diagnostic-question.entity';
 import { DiagnosticResult } from '../entities/diagnostic-result.entity';
 import { UserDiagnosticResult } from '../entities/user-diagnostic-result';
 
-type MockRepository<T extends ObjectLiteral = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+type MockRepository<T extends ObjectLiteral = any> = Partial<
+  Record<keyof Repository<T>, jest.Mock>
+>;
 
-const createMockRepository = <T extends ObjectLiteral = any>(): MockRepository<T> => ({
+const createMockRepository = <
+  T extends ObjectLiteral = any,
+>(): MockRepository<T> => ({
   find: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
@@ -33,9 +37,15 @@ describe('DiagnosticService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DiagnosticService,
-        { provide: getRepositoryToken(DiagnosticQuestion), useValue: questionRepo },
+        {
+          provide: getRepositoryToken(DiagnosticQuestion),
+          useValue: questionRepo,
+        },
         { provide: getRepositoryToken(DiagnosticResult), useValue: resultRepo },
-        { provide: getRepositoryToken(UserDiagnosticResult), useValue: userResultRepo },
+        {
+          provide: getRepositoryToken(UserDiagnosticResult),
+          useValue: userResultRepo,
+        },
       ],
     }).compile();
 
@@ -63,7 +73,9 @@ describe('DiagnosticService', () => {
       resultRepo.find!.mockResolvedValue(results as any);
 
       const res = await service.findAllResults();
-      expect(resultRepo.find).toHaveBeenCalledWith({ order: { minScore: 'ASC' } });
+      expect(resultRepo.find).toHaveBeenCalledWith({
+        order: { minScore: 'ASC' },
+      });
       expect(res).toEqual(results);
     });
   });
@@ -151,7 +163,12 @@ describe('DiagnosticService', () => {
   describe('evaluate', () => {
     const sampleResults = [
       { id: '1', minScore: 0, maxScore: 5, message: 'Low' } as DiagnosticResult,
-      { id: '2', minScore: 6, maxScore: 10, message: 'High' } as DiagnosticResult,
+      {
+        id: '2',
+        minScore: 6,
+        maxScore: 10,
+        message: 'High',
+      } as DiagnosticResult,
     ];
 
     it('should return result for anonymous user', async () => {
@@ -164,15 +181,23 @@ describe('DiagnosticService', () => {
 
     it('should throw NotFoundException if no hit', async () => {
       resultRepo.find!.mockResolvedValue([]);
-      await expect(service.evaluate(100)).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.evaluate(100)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
 
     it('should return existing user diagnostic if found', async () => {
-      const userDiag = { userId: 'u1', score: 3, result: sampleResults[0] } as UserDiagnosticResult;
+      const userDiag = {
+        userId: 'u1',
+        score: 3,
+        result: sampleResults[0],
+      } as UserDiagnosticResult;
       userResultRepo.findOne!.mockResolvedValue(userDiag as any);
 
       const res = await service.evaluate(3, 'u1');
-      expect(userResultRepo.findOne).toHaveBeenCalledWith({ where: { userId: 'u1' } });
+      expect(userResultRepo.findOne).toHaveBeenCalledWith({
+        where: { userId: 'u1' },
+      });
       expect(res).toEqual({ score: 3, result: sampleResults[0] });
     });
 
@@ -180,14 +205,24 @@ describe('DiagnosticService', () => {
       userResultRepo.findOne!.mockResolvedValue(null);
       resultRepo.find!.mockResolvedValue(sampleResults as any);
       const hit = sampleResults[0];
-      const createdDiag = { userId: 'u2', score: 4, result: hit } as UserDiagnosticResult;
+      const createdDiag = {
+        userId: 'u2',
+        score: 4,
+        result: hit,
+      } as UserDiagnosticResult;
       userResultRepo.create!.mockReturnValue(createdDiag);
       userResultRepo.save!.mockResolvedValue(createdDiag as any);
 
       const res = await service.evaluate(4, 'u2');
 
-      expect(userResultRepo.findOne).toHaveBeenCalledWith({ where: { userId: 'u2' } });
-      expect(userResultRepo.create).toHaveBeenCalledWith({ userId: 'u2', resultId: hit.id, score: 4 });
+      expect(userResultRepo.findOne).toHaveBeenCalledWith({
+        where: { userId: 'u2' },
+      });
+      expect(userResultRepo.create).toHaveBeenCalledWith({
+        userId: 'u2',
+        resultId: hit.id,
+        score: 4,
+      });
       expect(userResultRepo.save).toHaveBeenCalledWith(createdDiag);
       expect(res).toEqual({ score: 4, result: hit });
     });
@@ -206,7 +241,9 @@ describe('DiagnosticService', () => {
       const userDiag = { userId: 'u4', score: 5 } as UserDiagnosticResult;
       userResultRepo.findOne!.mockResolvedValue(userDiag as any);
       const res = await service.getUserResult('u4');
-      expect(userResultRepo.findOne).toHaveBeenCalledWith({ where: { userId: 'u4' } });
+      expect(userResultRepo.findOne).toHaveBeenCalledWith({
+        where: { userId: 'u4' },
+      });
       expect(res).toEqual(userDiag);
     });
   });

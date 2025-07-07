@@ -5,6 +5,8 @@ export class LoginDto {
   readonly email: string;
 
   @IsNotEmpty({ message: 'Le mot de passe est requis.' })
-  @MinLength(8, { message: 'Le mot de passe doit contenir au moins 8 caractères.' })
+  @MinLength(8, {
+    message: 'Le mot de passe doit contenir au moins 8 caractères.',
+  })
   readonly password: string;
 }

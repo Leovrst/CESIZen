@@ -24,28 +24,57 @@ describe('AuthenticationService', () => {
 
   describe('validateUser', () => {
     it('should return user data without password when credentials are valid', async () => {
-      const mockUser: any = { id: 1, email: 'test@example.com', password: 'hashedPwd', role: 'user' };
+      const mockUser: any = {
+        id: 1,
+        email: 'test@example.com',
+        password: 'hashedPwd',
+        role: 'user',
+      };
       (userService.findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
 
-      const result = await authService.validateUser('test@example.com', 'plainPwd');
+      const result = await authService.validateUser(
+        'test@example.com',
+        'plainPwd',
+      );
 
-      expect(result).toEqual({ id: 1, email: 'test@example.com', role: 'user' });
-      expect(userService.findUserByEmail).toHaveBeenCalledWith('test@example.com');
+      expect(result).toEqual({
+        id: 1,
+        email: 'test@example.com',
+        role: 'user',
+      });
+      expect(userService.findUserByEmail).toHaveBeenCalledWith(
+        'test@example.com',
+      );
     });
 
     it('should return null if user not found', async () => {
       (userService.findUserByEmail as jest.Mock).mockResolvedValue(null);
-      const result = await authService.validateUser('notfound@example.com', 'any');
+      const result = await authService.validateUser(
+        'notfound@example.com',
+        'any',
+      );
       expect(result).toBeNull();
     });
 
     it('should return null if password does not match', async () => {
-      const mockUser: any = { id: 2, email: 'user2@example.com', password: 'hashedPwd2', role: 'admin' };
+      const mockUser: any = {
+        id: 2,
+        email: 'user2@example.com',
+        password: 'hashedPwd2',
+        role: 'admin',
+      };
       (userService.findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(false));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(false));
 
-      const result = await authService.validateUser('user2@example.com', 'wrongPwd');
+      const result = await authService.validateUser(
+        'user2@example.com',
+        'wrongPwd',
+      );
       expect(result).toBeNull();
     });
   });
@@ -59,15 +88,21 @@ describe('AuthenticationService', () => {
     });
 
     it('should return accessToken and user for valid credentials', async () => {
-      const userPayload: any = { id: 3, email: 'user3@example.com', role: 'user' };
+      const userPayload: any = {
+        id: 3,
+        email: 'user3@example.com',
+        role: 'user',
+      };
       jest.spyOn(authService, 'validateUser').mockResolvedValue(userPayload);
 
       const result = await authService.login('user3@example.com', 'correctPwd');
 
       expect(result).toEqual({ accessToken: 'signedToken', user: userPayload });
-      expect(jwtService.sign).toHaveBeenCalledWith(
-        { sub: userPayload.id, email: userPayload.email, role: userPayload.role },
-      );
+      expect(jwtService.sign).toHaveBeenCalledWith({
+        sub: userPayload.id,
+        email: userPayload.email,
+        role: userPayload.role,
+      });
     });
   });
 });

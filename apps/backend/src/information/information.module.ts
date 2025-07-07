@@ -5,8 +5,8 @@ import { InformationPageController } from './information.controller';
 import { InformationPage } from '../entities/information-page.entity';
 
 @Module({
-    imports: [ TypeOrmModule.forFeature([InformationPage]) ],
-    providers: [ InformationPageService ],
-    controllers: [ InformationPageController ],
-  })
-  export class InformationPageModule {}
+  imports: [TypeOrmModule.forFeature([InformationPage])],
+  providers: [InformationPageService],
+  controllers: [InformationPageController],
+})
+export class InformationPageModule {}

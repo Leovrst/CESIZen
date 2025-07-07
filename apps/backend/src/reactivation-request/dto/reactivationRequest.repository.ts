@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
-import { ReactivationRequest, RequestStatus } from '../../entities/reactivationRequest.entity';
+import {
+  ReactivationRequest,
+  RequestStatus,
+} from '../../entities/reactivationRequest.entity';
 
 @Injectable()
 export class ReactivationRequestRepository {
@@ -10,7 +13,9 @@ export class ReactivationRequestRepository {
     private readonly repo: Repository<ReactivationRequest>,
   ) {}
 
-  async createAndSave(data: Partial<ReactivationRequest>): Promise<ReactivationRequest> {
+  async createAndSave(
+    data: Partial<ReactivationRequest>,
+  ): Promise<ReactivationRequest> {
     const request = this.repo.create(data);
     return this.repo.save(request);
   }
@@ -19,7 +24,9 @@ export class ReactivationRequestRepository {
     return this.repo.find();
   }
 
-  async findPendingByUserId(userId: string): Promise<ReactivationRequest | null> {
+  async findPendingByUserId(
+    userId: string,
+  ): Promise<ReactivationRequest | null> {
     return this.repo.findOne({
       where: {
         user: { id: userId },
@@ -28,7 +35,10 @@ export class ReactivationRequestRepository {
     });
   }
 
-  async updateRequest(id: string, updateData: Partial<ReactivationRequest>): Promise<ReactivationRequest> {
+  async updateRequest(
+    id: string,
+    updateData: Partial<ReactivationRequest>,
+  ): Promise<ReactivationRequest> {
     await this.repo.update(id, updateData);
     const request = await this.repo.findOne({ where: { id } });
     if (!request) {
