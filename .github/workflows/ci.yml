@@ -1,11 +1,15 @@
-name: CI
+name: CI & Deploy
 
 on:
   pull_request:
     branches: [main]
 
+  push:
+    branches: [main]
+
 jobs:
-  test-and-lint:
+  ci:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     services:
@@ -39,16 +43,51 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install backend dependencies
         working-directory: ./apps/backend
         run: npm ci
 
-      - name: Run tests with coverage
+      - name: Run backend linter
+        working-directory: ./apps/backend
+        run: npm run lint
+
+      - name: Run backend tests with coverage
         working-directory: ./apps/backend
         run: npm run test:cov
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           flags: backend
-          directory: ./apps/backend
+          directory: ./apps/backend/coverage
+
+  deploy-backend:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}
+
+  deploy-frontend:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy to Vercel
+        working-directory: ./apps/mobile
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --confirm --token $VERCEL_TOKEN
