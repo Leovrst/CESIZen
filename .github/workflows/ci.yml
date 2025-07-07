@@ -80,6 +80,11 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
+      - name: Debug Vercel token (temporaire)
+        run: echo "VERCEL_TOKEN is ${VERCEL_TOKEN::5}****"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
       - name: Deploy to Vercel
         working-directory: ./apps/mobile
         env:
