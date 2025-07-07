@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  test-and-lint:
     runs-on: ubuntu-latest
 
     services:
@@ -39,8 +39,20 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies and test backend
+      - name: Install dependencies
         working-directory: ./apps/backend
-        run: |
-          npm ci
-          npm run test:cov
+        run: npm ci
+
+      - name: Lint code
+        working-directory: ./apps/backend
+        run: npm run lint
+
+      - name: Run tests with coverage
+        working-directory: ./apps/backend
+        run: npm run test:cov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          flags: backend
+          directory: ./apps/backend
