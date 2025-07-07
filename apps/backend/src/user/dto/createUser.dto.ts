@@ -1,4 +1,12 @@
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { UserRole } from '../../entities/user.entity';
 
 export class CreateUserDto {
@@ -15,7 +23,9 @@ export class CreateUserDto {
   readonly email: string;
 
   @IsNotEmpty({ message: 'Le mot de passe est requis.' })
-  @MinLength(6, { message: 'Le mot de passe doit contenir au moins 6 caractères.' })
+  @MinLength(6, {
+    message: 'Le mot de passe doit contenir au moins 6 caractères.',
+  })
   readonly password: string;
 
   @IsOptional()
@@ -23,6 +33,8 @@ export class CreateUserDto {
   readonly suspended?: boolean;
 
   @IsOptional()
-  @IsEnum(UserRole, { message: 'Le rôle doit être l\'un des suivants: user, admin, superAdmin' })
+  @IsEnum(UserRole, {
+    message: "Le rôle doit être l'un des suivants: user, admin, superAdmin",
+  })
   readonly role?: UserRole;
 }

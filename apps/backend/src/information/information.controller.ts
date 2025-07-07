@@ -1,6 +1,12 @@
 import {
-  Controller, Get, Post, Put, Delete,
-  Param, Body, UseGuards,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
   Query,
   ParseIntPipe,
   UploadedFile,
@@ -28,48 +34,48 @@ const storage = diskStorage({
 
 @Controller('info')
 export class InformationPageController {
-    constructor(private svc: InformationPageService) {}
+  constructor(private svc: InformationPageService) {}
 
-    @Get()
-    getAll(
-      @Query('page', ParseIntPipe) page = 1,
-      @Query('limit', ParseIntPipe) limit = 20,
-    ) {
-      return this.svc.findAll({ page, limit });
-    }
-  
-    @Get(':slug')
-    getOne(@Param('slug') slug: string) {
-      return this.svc.findOneBySlug(slug);
-    }
+  @Get()
+  getAll(
+    @Query('page', ParseIntPipe) page = 1,
+    @Query('limit', ParseIntPipe) limit = 20,
+  ) {
+    return this.svc.findAll({ page, limit });
+  }
 
-    @UseGuards(AuthGuard('jwt'))
-    @UseInterceptors(FileInterceptor('image', { storage }))
-    @Post('admin')
-    create(
-      @UploadedFile() file: Express.Multer.File,
-      @Body() dto: CreateInformationPageDto,
-    ) {
-      const imageUrl = file ? `/uploads/${file.filename}` : undefined;
-      return this.svc.create({ ...dto, imageUrl });
-    }
+  @Get(':slug')
+  getOne(@Param('slug') slug: string) {
+    return this.svc.findOneBySlug(slug);
+  }
 
-    @UseGuards(AuthGuard('jwt'))
-    @UseInterceptors(FileInterceptor('image', { storage }))
-    @Put('admin/:id')
-    update(
-      @Param('id') id: string,
-      @UploadedFile() file: Express.Multer.File,
-      @Body() dto: UpdateInformationPageDto,
-    ) {
-      const imageUrl = file ? `/uploads/${file.filename}` : undefined;
-      delete(dto as any).removeImage;
-      return this.svc.update(id, { ...dto, imageUrl });
-    }
-  
-    @UseGuards(AuthGuard('jwt'))
-    @Delete('admin/:id')
-    remove(@Param('id') id: string) {
-      return this.svc.remove(id);
-    }
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('image', { storage }))
+  @Post('admin')
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() dto: CreateInformationPageDto,
+  ) {
+    const imageUrl = file ? `/uploads/${file.filename}` : undefined;
+    return this.svc.create({ ...dto, imageUrl });
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('image', { storage }))
+  @Put('admin/:id')
+  update(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() dto: UpdateInformationPageDto,
+  ) {
+    const imageUrl = file ? `/uploads/${file.filename}` : undefined;
+    delete (dto as any).removeImage;
+    return this.svc.update(id, { ...dto, imageUrl });
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('admin/:id')
+  remove(@Param('id') id: string) {
+    return this.svc.remove(id);
+  }
 }

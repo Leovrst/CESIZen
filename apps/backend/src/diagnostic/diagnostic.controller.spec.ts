@@ -33,7 +33,9 @@ describe('DiagnosticController', () => {
 
     controller = module.get<DiagnosticController>(DiagnosticController);
     // Cast du service pour l'autocomplétion et la compatibilité jest
-    service = module.get<DiagnosticService>(DiagnosticService) as unknown as ReturnType<typeof mockDiagnosticService>;
+    service = module.get<DiagnosticService>(
+      DiagnosticService,
+    ) as unknown as ReturnType<typeof mockDiagnosticService>;
   });
 
   it('should be defined', () => {
@@ -178,7 +180,9 @@ describe('DiagnosticController', () => {
       service.getUserResult.mockResolvedValue(null);
       const req = { user: { id: 'u2' } };
 
-      await expect(controller.getUserResult(req)).rejects.toBeInstanceOf(NotFoundException);
+      await expect(controller.getUserResult(req)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 

@@ -46,9 +46,18 @@ describe('UserService', () => {
     it('hashes password and saves user when email is new', async () => {
       userRepository.findByEmail.mockResolvedValue(null);
       const hashed = 'hashedPass';
-      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<Promise<string>, [string, number]>;
+      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<
+        Promise<string>,
+        [string, number]
+      >;
       hashSpy.mockResolvedValue(hashed);
-      const savedUser = { id: '1', firstName, lastName, email, password: hashed } as User;
+      const savedUser = {
+        id: '1',
+        firstName,
+        lastName,
+        email,
+        password: hashed,
+      } as User;
       userRepository.createAndSave.mockResolvedValue(savedUser);
 
       const result = await service.createUser(
@@ -84,7 +93,9 @@ describe('UserService', () => {
 
     it('throws NotFoundException if not found', async () => {
       userRepository.findByEmail.mockResolvedValue(null);
-      await expect(service.findUserByEmail('a@b.com')).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.findUserByEmail('a@b.com')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
@@ -97,7 +108,9 @@ describe('UserService', () => {
 
     it('throws NotFoundException if not found', async () => {
       userRepository.findById.mockResolvedValue(null);
-      await expect(service.findUserById('1')).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.findUserById('1')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
@@ -106,7 +119,10 @@ describe('UserService', () => {
       const id = '1';
       const newPassword = 'newpass';
       const hashed = 'newHashed';
-      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<Promise<string>, [string, number]>;
+      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<
+        Promise<string>,
+        [string, number]
+      >;
       hashSpy.mockResolvedValue(hashed);
       const updatedUser = { id, password: hashed } as User;
       userRepository.updateUser.mockResolvedValue(updatedUser);
@@ -114,7 +130,9 @@ describe('UserService', () => {
       const result = await service.updateUser(id, { password: newPassword });
 
       expect(hashSpy).toHaveBeenCalledWith(newPassword, 10);
-      expect(userRepository.updateUser).toHaveBeenCalledWith(id, { password: hashed });
+      expect(userRepository.updateUser).toHaveBeenCalledWith(id, {
+        password: hashed,
+      });
       expect(result).toBe(updatedUser);
     });
 
@@ -144,9 +162,13 @@ describe('UserService', () => {
 
     it('throws NotFoundException if user does not exist', async () => {
       const id = '1';
-      jest.spyOn(service, 'findUserById').mockRejectedValue(new NotFoundException());
+      jest
+        .spyOn(service, 'findUserById')
+        .mockRejectedValue(new NotFoundException());
 
-      await expect(service.deleteUser(id)).rejects.toBeInstanceOf(NotFoundException);
+      await expect(service.deleteUser(id)).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
@@ -163,14 +185,19 @@ describe('UserService', () => {
       const id = '1';
       const newPass = 'pass';
       const hashed = 'hashedNew';
-      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<Promise<string>, [string, number]>;
+      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<
+        Promise<string>,
+        [string, number]
+      >;
       hashSpy.mockResolvedValue(hashed);
       const updatedUser = { id, password: hashed } as User;
       userRepository.updateUser.mockResolvedValue(updatedUser);
 
       await expect(service.resetPassword(id, newPass)).resolves.toBeUndefined();
       expect(hashSpy).toHaveBeenCalledWith(newPass, 10);
-      expect(userRepository.updateUser).toHaveBeenCalledWith(id, { password: hashed });
+      expect(userRepository.updateUser).toHaveBeenCalledWith(id, {
+        password: hashed,
+      });
     });
   });
 });

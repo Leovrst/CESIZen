@@ -1,11 +1,11 @@
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class UpdateQuestionDto {
-    @IsOptional()
-    @IsString()
-    label?: string;
+  @IsOptional()
+  @IsString()
+  label?: string;
 
-    @IsOptional()
-    @IsString()
-    points?: number;
+  @IsOptional()
+  @IsString()
+  points?: number;
 }

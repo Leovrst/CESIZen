@@ -4,7 +4,7 @@ export class CreateReactivationRequestDto {
   @IsUUID()
   userId: string;
 
-  @IsNotEmpty({ message: "Le commentaire est requis." })
+  @IsNotEmpty({ message: 'Le commentaire est requis.' })
   @IsString()
   comment: string;
 }

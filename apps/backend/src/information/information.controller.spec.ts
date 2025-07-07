@@ -52,21 +52,35 @@ describe('InformationPageController', () => {
   describe('create', () => {
     it('should call service.create with imageUrl when file is provided', async () => {
       const file = { filename: 'img.png' } as Express.Multer.File;
-      const dto: CreateInformationPageDto = { title: 'New', content: 'Content', slug: 'new-page' };
+      const dto: CreateInformationPageDto = {
+        title: 'New',
+        content: 'Content',
+        slug: 'new-page',
+      };
       const expected = { id: '1', ...dto, imageUrl: '/uploads/img.png' };
       service.create.mockResolvedValue(expected as any);
 
       const result = await controller.create(file, dto);
-      expect(service.create).toHaveBeenCalledWith({ ...dto, imageUrl: '/uploads/img.png' });
+      expect(service.create).toHaveBeenCalledWith({
+        ...dto,
+        imageUrl: '/uploads/img.png',
+      });
       expect(result).toBe(expected);
     });
 
     it('should call service.create without imageUrl when no file is provided', async () => {
-      const dto: CreateInformationPageDto = { title: 'NoImage', content: 'Empty', slug: 'no-image' };
+      const dto: CreateInformationPageDto = {
+        title: 'NoImage',
+        content: 'Empty',
+        slug: 'no-image',
+      };
       service.create.mockResolvedValue({} as any);
 
       const result = await controller.create(undefined as any, dto);
-      expect(service.create).toHaveBeenCalledWith({ ...dto, imageUrl: undefined });
+      expect(service.create).toHaveBeenCalledWith({
+        ...dto,
+        imageUrl: undefined,
+      });
       expect(result).toBeDefined();
     });
   });
@@ -80,11 +94,20 @@ describe('InformationPageController', () => {
         content: 'Content',
         removeImage: true,
       });
-      const expected = { id, title: 'Up', content: 'Content', imageUrl: '/uploads/update.png' };
+      const expected = {
+        id,
+        title: 'Up',
+        content: 'Content',
+        imageUrl: '/uploads/update.png',
+      };
       service.update.mockResolvedValue(expected as any);
 
       const result = await controller.update(id, file, dto);
-      expect(service.update).toHaveBeenCalledWith(id, { title: 'Up', content: 'Content', imageUrl: '/uploads/update.png' });
+      expect(service.update).toHaveBeenCalledWith(id, {
+        title: 'Up',
+        content: 'Content',
+        imageUrl: '/uploads/update.png',
+      });
       expect(result).toBe(expected);
     });
 
@@ -97,7 +120,10 @@ describe('InformationPageController', () => {
       service.update.mockResolvedValue({} as any);
 
       const result = await controller.update(id, undefined as any, dto);
-      expect(service.update).toHaveBeenCalledWith(id, { ...dto, imageUrl: undefined });
+      expect(service.update).toHaveBeenCalledWith(id, {
+        ...dto,
+        imageUrl: undefined,
+      });
       expect(result).toBeDefined();
     });
   });

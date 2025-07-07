@@ -1,17 +1,23 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('information_pages')
 export class InformationPage {
-  @PrimaryGeneratedColumn('uuid') 
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true }) 
-  slug: string;  
+  @Column({ unique: true })
+  slug: string;
 
-  @Column() 
+  @Column()
   title: string;
 
-  @Column('text') 
+  @Column('text')
   content: string;
 
   @Column({ nullable: true })
@@ -20,9 +26,9 @@ export class InformationPage {
   @Column({ nullable: true })
   videoUrl?: string;
 
-  @CreateDateColumn() 
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn() 
+  @UpdateDateColumn()
   updatedAt: Date;
 }
