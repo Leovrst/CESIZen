@@ -58,6 +58,10 @@
           <ion-icon :name="currentRoute==='register' ? 'person-add' : 'person-add-outline'" />
           <ion-label>Inscription</ion-label>
         </ion-tab-button>
+        <ion-tab-button tab="support" href="/support">
+          <ion-icon :name="currentRoute==='support' ? 'help-buoy' : 'help-buoy-outline'" />
+          <ion-label>Support</ion-label>
+        </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
   </ion-app>

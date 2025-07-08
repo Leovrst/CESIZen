@@ -16,6 +16,7 @@ import { InformationPageModule } from './information/information.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { InformationPage } from './entities/information-page.entity';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { InformationPage } from './entities/information-page.entity';
     ReactivationRequestModule,
     DiagnosticModule,
     InformationPageModule,
+    SupportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
