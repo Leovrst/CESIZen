@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./apps/frontend
+        working-directory: ./apps/mobile
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
