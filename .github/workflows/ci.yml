@@ -91,8 +91,35 @@ jobs:
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_URL }}
 
   deploy-frontend:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Vercel Deploy Hook
-        run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+  if: github.event_name == 'push'
+  runs-on: ubuntu-latest
+  defaults:
+    run:
+      working-directory: ./apps/mobile
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build frontend
+      run: npm run build
+
+    - name: Install Vercel CLI
+      run: npm install -g vercel
+
+    - name: Deploy to Vercel (CLI)
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      run: |
+        vercel --prod --token $VERCEL_TOKEN --confirm --yes \
+          --org $VERCEL_ORG_ID \
+          --project $VERCEL_PROJECT_ID
