@@ -3,7 +3,7 @@ name: CI & Deploy
 on:
   pull_request:
     branches: [main]
-
+    
   push:
     branches: [main]
 
@@ -100,7 +100,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set Node.js 20
         uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -114,10 +114,18 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
+      - name: Link Vercel project (if needed)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          if [ ! -d ".vercel" ]; then
+            vercel link --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --yes
+          fi
+
       - name: Deploy to Vercel (CLI)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          vercel --prod --token $VERCEL_TOKEN --confirm --yes --scope $VERCEL_ORG_ID --project $VERCEL_PROJECT_ID
+          vercel --prod --token $VERCEL_TOKEN --confirm --yes --scope $VERCEL_ORG_ID
