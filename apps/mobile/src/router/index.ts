@@ -8,6 +8,7 @@ import DiagnosticView from '@/views/DiagnosticView.vue';
 import InformationListView from '@/views/InformationListView.vue';
 import InformationDetailView from '@/views/InformationDetailView.vue';
 import DashboardView from '@/views/DashboardView.vue';
+import SupportView from '@/views/SupportView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -54,6 +55,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'dashboard',
     component: DashboardView,
     meta: { requiresAdmin: true },
+  },
+  {
+    path: '/support',
+    name: 'support',
+    component: SupportView,
   }
 ]
 
