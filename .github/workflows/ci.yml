@@ -3,7 +3,7 @@ name: CI & Deploy
 on:
   pull_request:
     branches: [main]
-    
+
   push:
     branches: [main]
 
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./apps/mobile
+        working-directory: ./apps/frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -118,14 +118,16 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           if [ ! -d ".vercel" ]; then
-            vercel link --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --yes
+            vercel link --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --project $VERCEL_PROJECT_ID --yes
           fi
 
       - name: Deploy to Vercel (CLI)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          vercel --prod --token $VERCEL_TOKEN --confirm --yes --scope $VERCEL_ORG_ID
+          vercel --prod --token $VERCEL_TOKEN --confirm --yes --scope $VERCEL_ORG_ID --project $VERCEL_PROJECT_ID
