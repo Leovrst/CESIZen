@@ -9,8 +9,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
-  const throttlerGuard = app.get(ThrottlerGuard);
-  app.useGlobalGuards(throttlerGuard);
   app.enableCors({
     origin: [
       'http://localhost:5173',
