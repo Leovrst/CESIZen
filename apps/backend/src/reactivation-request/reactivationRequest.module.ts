@@ -4,7 +4,7 @@ import { ReactivationRequest } from '../entities/reactivationRequest.entity';
 import { ReactivationRequestController } from './reactivationRequest.controller';
 import { ReactivationRequestService } from './reactivationRequest.service';
 import { ReactivationRequestRepository } from './dto/reactivationRequest.repository';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ReactivationRequest]), forwardRef(() => UserModule)],

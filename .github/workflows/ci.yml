@@ -76,6 +76,10 @@ jobs:
         working-directory: ./apps/backend
         run: npm run test:cov
 
+      - name: Run backend integration tests
+        working-directory: ./apps/backend
+        run: npm run test:e2e
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:

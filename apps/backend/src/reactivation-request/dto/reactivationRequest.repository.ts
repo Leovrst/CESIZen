@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 import {
@@ -42,7 +42,7 @@ export class ReactivationRequestRepository {
     await this.repo.update(id, updateData);
     const request = await this.repo.findOne({ where: { id } });
     if (!request) {
-      throw new Error(`ReactivationRequest with id ${id} not found`);
+      throw new NotFoundException(`ReactivationRequest with id ${id} not found`);
     }
     return request;
   }
