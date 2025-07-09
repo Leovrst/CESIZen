@@ -39,6 +39,8 @@ async function bootstrap() {
     }
     next();
   });
+  const backend = app.getHttpAdapter().getInstance();
+  backend.set('trust proxy', 1);
   await app.listen(process.env.PORT ?? 3000, () => { });
 }
 bootstrap();
