@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReactivationRequest } from '../entities/reactivationRequest.entity';
 import { ReactivationRequestController } from './reactivationRequest.controller';
@@ -7,7 +7,7 @@ import { ReactivationRequestRepository } from './dto/reactivationRequest.reposit
 import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ReactivationRequest]), UserModule],
+  imports: [TypeOrmModule.forFeature([ReactivationRequest]), forwardRef(() => UserModule)],
   controllers: [ReactivationRequestController],
   providers: [ReactivationRequestService, ReactivationRequestRepository],
   exports: [ReactivationRequestService],

@@ -31,4 +31,10 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @Column({ default: 0 })
+  loginAttempts: number;
+
+  @Column({ nullable: true })
+  suspensionReason?: string;
 }

@@ -36,4 +36,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsBoolean()
   readonly suspended?: boolean;
+
+  @IsOptional()
+  readonly failedLoginAttempts?: number;
 }

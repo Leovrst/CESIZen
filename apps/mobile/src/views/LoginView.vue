@@ -76,7 +76,13 @@ async function login() {
     await router.push('/');
     window.location.reload();
   } catch (err: any) {
-    console.error(err);
+    if (
+      err.response?.data?.message &&
+      err.response.data.message.includes('trop de tentatives')
+    ) {
+      await router.push('/403');
+      return;
+    }
     if (err.response?.status === 429) {
       error.value = err.response.data?.message || "Trop de tentatives. Réessayez plus tard.";
     } else {

@@ -6,18 +6,6 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const loginRateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5,
-    handler: (req, res) => {
-      res.status(429).json({
-        statusCode: 429,
-        message:
-          'Trop de tentatives de connexion. Réessayez dans quelques minutes.',
-        error: 'Too Many Requests',
-      });
-    },
-  });
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
@@ -30,7 +18,6 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: ['Authorization', 'Content-Type'],
   });
-  app.use('/users/login', loginRateLimiter);
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -52,8 +39,6 @@ async function bootstrap() {
     }
     next();
   });
-  await app.listen(process.env.PORT ?? 3000, () => {
-    console.log(`🚀 App is listening on port ${process.env.PORT ?? 3000}`);
-  });
+  await app.listen(process.env.PORT ?? 3000, () => { });
 }
 bootstrap();

@@ -2,6 +2,8 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import {
   ReactivationRequest,
@@ -14,6 +16,7 @@ import { UserService } from '../user/user.service';
 export class ReactivationRequestService {
   constructor(
     private readonly requestRepository: ReactivationRequestRepository,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
 

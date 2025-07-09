@@ -263,10 +263,17 @@ async function createAccount() {
 
 async function toggleSuspension(u: User) {
   try {
-    await api.put(`/users/${u.id}`, { suspended: !u.suspended });
-    message.value = u.suspended ? 'Réactivé.' : 'Suspendu.';
+    if (!u.suspended) {
+      await api.put(`/users/${u.id}`, { suspended: true });
+      message.value = 'Suspendu.';
+    } else {
+      await api.put(`/users/${u.id}`, { suspended: false });
+      message.value = 'Réactivé.';
+    }
     fetchUsers();
-  } catch (e: any) { error.value = e.response?.data?.message || 'Erreur suspension'; }
+  } catch (e: any) {
+    error.value = e.response?.data?.message || 'Erreur suspension';
+  }
 }
 
 async function deleteUser(u: User) {

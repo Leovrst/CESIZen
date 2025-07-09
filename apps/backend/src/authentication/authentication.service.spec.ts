@@ -31,9 +31,7 @@ describe('AuthenticationService', () => {
         role: 'user',
       };
       (userService.findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementation(() => Promise.resolve(true));
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
 
       const result = await authService.validateUser(
         'test@example.com',
@@ -67,9 +65,7 @@ describe('AuthenticationService', () => {
         role: 'admin',
       };
       (userService.findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementation(() => Promise.resolve(false));
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(false));
 
       const result = await authService.validateUser(
         'user2@example.com',
@@ -80,29 +76,56 @@ describe('AuthenticationService', () => {
   });
 
   describe('login', () => {
-    it('should throw UnauthorizedException when validation fails', async () => {
-      jest.spyOn(authService, 'validateUser').mockResolvedValue(null as any);
-      await expect(
-        authService.login('bad@example.com', 'badPwd'),
-      ).rejects.toThrow(UnauthorizedException);
+    it('should throw UnauthorizedException if user not found', async () => {
+      (userService.findUserByEmail as jest.Mock).mockResolvedValue(null);
+      await expect(authService.login('not@found.com', 'pass'))
+        .rejects.toThrow(UnauthorizedException);
     });
 
-    it('should return accessToken and user for valid credentials', async () => {
-      const userPayload: any = {
-        id: 3,
-        email: 'user3@example.com',
-        role: 'user',
-      };
-      jest.spyOn(authService, 'validateUser').mockResolvedValue(userPayload);
+    it('should throw UnauthorizedException if user is suspended for brute force', async () => {
+      const user = { id: '1', email: 'b@b.com', password: 'hashed', suspended: true, suspensionReason: 'BRUTE_FORCE' };
+      (userService.findUserByEmail as jest.Mock).mockResolvedValue(user);
+      await expect(authService.login('b@b.com', 'pass'))
+        .rejects.toThrow(/trop de tentatives/i);
+    });
 
-      const result = await authService.login('user3@example.com', 'correctPwd');
+    it('should increment loginAttempts and throw if password is wrong', async () => {
+      const user = { id: '2', email: 'c@c.com', password: 'hashed', suspended: false, loginAttempts: 0 };
+      (userService.findUserByEmail as jest.Mock).mockResolvedValue(user);
+      (jest.spyOn(bcrypt, 'compare') as any).mockResolvedValue(false);
+      userService.incrementLoginAttempts = jest.fn();
+      userService.findUserById = jest.fn().mockResolvedValue({ ...user, loginAttempts: 1 });
 
-      expect(result).toEqual({ accessToken: 'signedToken', user: userPayload });
-      expect(jwtService.sign).toHaveBeenCalledWith({
-        sub: userPayload.id,
-        email: userPayload.email,
-        role: userPayload.role,
-      });
+      await expect(authService.login('c@c.com', 'wrongpass'))
+        .rejects.toThrow(/identifiants incorrects/i);
+
+      expect(userService.incrementLoginAttempts).toHaveBeenCalledWith('2');
+    });
+
+    it('should suspend user and throw if loginAttempts >= 5', async () => {
+      const user = { id: '3', email: 'd@d.com', password: 'hashed', suspended: false, loginAttempts: 4 };
+      (userService.findUserByEmail as jest.Mock).mockResolvedValue(user);
+      (jest.spyOn(bcrypt, 'compare') as any).mockResolvedValue(false);
+      userService.incrementLoginAttempts = jest.fn();
+      userService.findUserById = jest.fn().mockResolvedValue({ ...user, loginAttempts: 5 });
+      userService.suspendUserAndCreateReactivationRequest = jest.fn();
+
+      await expect(authService.login('d@d.com', 'wrongpass'))
+        .rejects.toThrow(/compte suspendu/i);
+
+      expect(userService.suspendUserAndCreateReactivationRequest).toHaveBeenCalledWith('3');
+    });
+
+    it('should reset loginAttempts and return token and user if password ok', async () => {
+      const user = { id: '4', email: 'e@e.com', password: 'hashed', role: 'user', suspended: false };
+      (userService.findUserByEmail as jest.Mock).mockResolvedValue(user);
+      (jest.spyOn(bcrypt, 'compare') as any).mockResolvedValue(true);
+      userService.resetLoginAttempts = jest.fn();
+
+      const result = await authService.login('e@e.com', 'goodpass');
+      expect(userService.resetLoginAttempts).toHaveBeenCalledWith('4');
+      expect(result.accessToken).toBe('signedToken');
+      expect(result.user).toEqual(user);
     });
   });
 });

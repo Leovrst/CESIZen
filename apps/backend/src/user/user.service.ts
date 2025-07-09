@@ -7,10 +7,14 @@ import * as bcrypt from 'bcrypt';
 import { User, UserRole } from '../entities/user.entity';
 import { UserRepository } from './dto/user.repository';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { ReactivationRequestService } from '../reactivation-request/reactivationRequest.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly reactivationRequestService: ReactivationRequestService,
+  ) { }
 
   async createUser(
     firstName: string,
@@ -66,6 +70,13 @@ export class UserService {
       dataToUpdate.password = await bcrypt.hash(dataToUpdate.password, 10);
     }
 
+    if (dataToUpdate.suspended === true && !dataToUpdate.suspensionReason) {
+      dataToUpdate.suspensionReason = 'ADMIN';
+    }
+    if (dataToUpdate.suspended === false) {
+      dataToUpdate.suspensionReason = undefined;
+    }
+
     return this.userRepository.updateUser(id, dataToUpdate);
   }
 
@@ -81,5 +92,24 @@ export class UserService {
   async resetPassword(id: string, newPassword: string): Promise<void> {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await this.userRepository.updateUser(id, { password: hashedPassword });
+  }
+
+  async incrementLoginAttempts(userId: string) {
+    await this.userRepository.incrementLoginAttempts(userId);
+  }
+
+  async resetLoginAttempts(userId: string) {
+    await this.userRepository.updateUser(userId, { loginAttempts: 0 });
+  }
+
+  async suspendUserAndCreateReactivationRequest(userId: string) {
+    await this.userRepository.updateUser(userId, {
+      suspended: true,
+      suspensionReason: 'BRUTE_FORCE',
+    });
+    await this.reactivationRequestService.createRequest(
+      userId,
+      "Blocage automatique après 5 tentatives échouées."
+    );
   }
 }
