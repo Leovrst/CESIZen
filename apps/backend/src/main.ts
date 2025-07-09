@@ -1,14 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
+  const throttlerGuard = app.get(ThrottlerGuard);
+  app.useGlobalGuards(throttlerGuard);
   app.enableCors({
     origin: [
       'http://localhost:5173',
