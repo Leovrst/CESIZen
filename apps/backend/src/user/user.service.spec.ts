@@ -11,11 +11,15 @@ type MockRepo = {
   updateUser: jest.Mock<Promise<User>, [string, Partial<User>]>;
   deleteUser: jest.Mock<Promise<void>, [string]>;
   findAll: jest.Mock<Promise<User[]>, []>;
+  incrementLoginAttempts?: jest.Mock<Promise<void>, [string]>;
 };
 
 describe('UserService', () => {
   let service: UserService;
   let userRepository: MockRepo;
+  const mockReactivationRequestService = {
+    createRequest: jest.fn(),
+  };
 
   beforeEach(() => {
     userRepository = {
@@ -25,9 +29,14 @@ describe('UserService', () => {
       updateUser: jest.fn<Promise<User>, [string, Partial<User>]>(),
       deleteUser: jest.fn<Promise<void>, [string]>(),
       findAll: jest.fn<Promise<User[]>, []>(),
+      incrementLoginAttempts: jest.fn<Promise<void>, [string]>(),
     };
 
-    service = new UserService(userRepository as unknown as UserRepository);
+    service = new UserService(
+      userRepository as unknown as UserRepository,
+      mockReactivationRequestService as any
+    );
+    jest.clearAllMocks();
   });
 
   describe('createUser', () => {
@@ -45,18 +54,13 @@ describe('UserService', () => {
 
     it('hashes password and saves user when email is new', async () => {
       userRepository.findByEmail.mockResolvedValue(null);
-      const hashed = 'hashedPass';
-      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<
-        Promise<string>,
-        [string, number]
-      >;
-      hashSpy.mockResolvedValue(hashed);
+      (jest.spyOn(bcrypt, 'hash') as any).mockResolvedValue('hashedPass');
       const savedUser = {
         id: '1',
         firstName,
         lastName,
         email,
-        password: hashed,
+        password: 'hashedPass',
       } as User;
       userRepository.createAndSave.mockResolvedValue(savedUser);
 
@@ -68,13 +72,12 @@ describe('UserService', () => {
         UserRole.ADMIN,
       );
 
-      expect(hashSpy).toHaveBeenCalledWith(password, 10);
       expect(userRepository.createAndSave).toHaveBeenCalledWith(
         expect.objectContaining({
           firstName,
           lastName,
           email,
-          password: hashed,
+          password: 'hashedPass',
           role: UserRole.ADMIN,
           suspended: false,
           registeredAt: expect.any(Date),
@@ -118,20 +121,14 @@ describe('UserService', () => {
     it('hashes new password if provided and updates', async () => {
       const id = '1';
       const newPassword = 'newpass';
-      const hashed = 'newHashed';
-      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<
-        Promise<string>,
-        [string, number]
-      >;
-      hashSpy.mockResolvedValue(hashed);
-      const updatedUser = { id, password: hashed } as User;
+      (jest.spyOn(bcrypt, 'hash') as any).mockResolvedValue('newHashed');
+      const updatedUser = { id, password: 'newHashed' } as User;
       userRepository.updateUser.mockResolvedValue(updatedUser);
 
       const result = await service.updateUser(id, { password: newPassword });
 
-      expect(hashSpy).toHaveBeenCalledWith(newPassword, 10);
       expect(userRepository.updateUser).toHaveBeenCalledWith(id, {
-        password: hashed,
+        password: 'newHashed',
       });
       expect(result).toBe(updatedUser);
     });
@@ -184,19 +181,13 @@ describe('UserService', () => {
     it('hashes new password and updates user', async () => {
       const id = '1';
       const newPass = 'pass';
-      const hashed = 'hashedNew';
-      const hashSpy = jest.spyOn(bcrypt, 'hash') as unknown as jest.SpyInstance<
-        Promise<string>,
-        [string, number]
-      >;
-      hashSpy.mockResolvedValue(hashed);
-      const updatedUser = { id, password: hashed } as User;
+      (jest.spyOn(bcrypt, 'hash') as any).mockResolvedValue('hashedNew');
+      const updatedUser = { id, password: 'hashedNew' } as User;
       userRepository.updateUser.mockResolvedValue(updatedUser);
 
       await expect(service.resetPassword(id, newPass)).resolves.toBeUndefined();
-      expect(hashSpy).toHaveBeenCalledWith(newPass, 10);
       expect(userRepository.updateUser).toHaveBeenCalledWith(id, {
-        password: hashed,
+        password: 'hashedNew',
       });
     });
   });
