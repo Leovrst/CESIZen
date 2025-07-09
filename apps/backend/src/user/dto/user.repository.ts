@@ -44,4 +44,8 @@ export class UserRepository {
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
+
+  async incrementLoginAttempts(id: string): Promise<void> {
+    await this.userRepository.increment({ id }, 'loginAttempts', 1);
+  }
 }
