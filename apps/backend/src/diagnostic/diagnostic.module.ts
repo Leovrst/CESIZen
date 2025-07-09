@@ -4,7 +4,7 @@ import { DiagnosticQuestion } from '../entities/diagnostic-question.entity';
 import { DiagnosticResult } from '../entities/diagnostic-result.entity';
 import { DiagnosticService } from './diagnostic.service';
 import { DiagnosticController } from './diagnostic.controller';
-import { UserDiagnosticResult } from 'src/entities/user-diagnostic-result';
+import { UserDiagnosticResult } from '../entities/user-diagnostic-result';
 
 @Module({
   imports: [
