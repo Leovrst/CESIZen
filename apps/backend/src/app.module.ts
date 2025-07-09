@@ -17,9 +17,18 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { InformationPage } from './entities/information-page.entity';
 import { SupportModule } from './support/support.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60,
+          limit: 10,
+        },
+      ],
+    }),
     ServeStaticModule.forRoot({
       serveRoot: '/uploads',
       rootPath: join(process.cwd(), 'uploads'),
